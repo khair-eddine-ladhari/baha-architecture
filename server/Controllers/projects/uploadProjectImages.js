@@ -1,7 +1,8 @@
-import Project from "../../Models/Project.js";
+import Project from "../../Models/Projects.js";
 import cloudinary from "../../config/cloudinary.js";
+import fs from "fs";
 
-export const deleteProject = async (req, res) => {
+export const uploadProjectImages = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -11,22 +12,35 @@ export const deleteProject = async (req, res) => {
       return res.status(404).json({ message: "Project not found" });
     }
 
-    // 2. delete cover image from cloudinary
-    const oldPublicId = project.cover_image.split("/").pop().split(".")[0];
-    await cloudinary.uploader.destroy(`projects/covers/${oldPublicId}`);
+    // 2. check if images were sent
+    if (!req.files || !req.files.images) {
+      return res.status(400).json({ message: "No images sent" });
+    }
 
-    // 3. delete all images from cloudinary
-    await Promise.all(
-      project.images.map(async (image) => {
-        await cloudinary.uploader.destroy(image.public_id);
+    // 3. upload each image to cloudinary
+    const newImages = await Promise.all(
+      req.files.images.map(async (file) => {
+        const result = await cloudinary.uploader.upload(file.path, {
+          folder: "projects/images",
+        });
+
+        // delete temp file
+        fs.unlinkSync(file.path);
+
+        return {
+          url: result.secure_url,
+          public_id: result.public_id,
+        };
       })
     );
 
-    // 4. delete project from MongoDB
-    await Project.findByIdAndDelete(id);
+    // 4. add new images to project
+    project.images.push(...newImages);
+    await project.save();
 
     res.status(200).json({
-      message: "Project deleted successfully",
+      message: "Images uploaded successfully",
+      images: project.images,
     });
 
   } catch (error) {

@@ -33,9 +33,8 @@ export const updateProject = async (req, res) => {
     // 4. update cover image if new one sent
     if (req.files && req.files.cover_image) {
 
-      // delete old cover from cloudinary
-      const oldPublicId = project.cover_image.split("/").pop().split(".")[0];
-      await cloudinary.uploader.destroy(`projects/covers/${oldPublicId}`);
+      // ✅ delete old cover from cloudinary using public_id
+      await cloudinary.uploader.destroy(project.cover_image.public_id);
 
       // upload new cover
       const coverResult = await cloudinary.uploader.upload(
@@ -46,7 +45,11 @@ export const updateProject = async (req, res) => {
       // delete temp file
       fs.unlinkSync(req.files.cover_image[0].path);
 
-      project.cover_image = coverResult.secure_url;
+      // ✅ save both url and public_id
+      project.cover_image = {
+        url: coverResult.secure_url,
+        public_id: coverResult.public_id
+      };
     }
 
     // 5. add new images if sent

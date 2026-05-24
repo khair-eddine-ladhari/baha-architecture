@@ -12,8 +12,7 @@ export const deleteProject = async (req, res) => {
     }
 
     // 2. delete cover image from cloudinary
-    const oldPublicId = project.cover_image.split("/").pop().split(".")[0];
-    await cloudinary.uploader.destroy(`projects/covers/${oldPublicId}`);
+    await cloudinary.uploader.destroy(project.cover_image.public_id);
 
     // 3. delete all images from cloudinary
     await Promise.all(
