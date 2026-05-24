@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import Projectmodal from "./Projectmodal.jsx";
 
 const projects = [
   {
@@ -79,7 +80,8 @@ function NewsItem({ item }) {
   );
 }
 
-function ProjectTeaser({ project, index }) {
+// ✅ onSelect is passed from Home so ProjectTeaser can open the modal
+function ProjectTeaser({ project, index, onSelect }) {
   const ref = useRef(null);
   const [visible, setVisible] = useState(false);
 
@@ -95,31 +97,30 @@ function ProjectTeaser({ project, index }) {
   return (
     <div
       ref={ref}
-      className={`transition-all duration-700 ease-out ${
+      onClick={() => onSelect(project)}  // ✅ calls Home's setSelectedProject
+      className={`group cursor-pointer transition-all duration-700 ease-out ${
         visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
       }`}
       style={{ transitionDelay: `${index * 120}ms` }}
     >
-      <a href={`/work/${project.slug}`} className="block group">
-        {/* Title row — exactly like KAAN */}
-        <div className="flex justify-between items-baseline border-t border-black py-2">
-          <h3 className="text-[11px] font-light uppercase tracking-wider group-hover:opacity-40 transition-opacity duration-300">
-            {project.title}
-          </h3>
-          <span className="text-[11px] font-light text-gray-400 uppercase tracking-wider ml-6 shrink-0">
-            {project.location}
-          </span>
-        </div>
-        {/* Image */}
-        <div className="overflow-hidden w-full" style={{ aspectRatio: "16/10" }}>
-          <img
-            src={project.image}
-            alt={project.title}
-            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-            loading="lazy"
-          />
-        </div>
-      </a>
+      {/* Title row */}
+      <div className="flex justify-between items-baseline border-t border-black py-2">
+        <h3 className="text-[11px] font-light uppercase tracking-wider group-hover:opacity-40 transition-opacity duration-300">
+          {project.title}
+        </h3>
+        <span className="text-[11px] font-light text-gray-400 uppercase tracking-wider ml-6 shrink-0">
+          {project.location}
+        </span>
+      </div>
+      {/* Image */}
+      <div className="overflow-hidden w-full" style={{ aspectRatio: "16/10" }}>
+        <img
+          src={project.image}
+          alt={project.title}
+          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+          loading="lazy"
+        />
+      </div>
     </div>
   );
 }
@@ -127,6 +128,7 @@ function ProjectTeaser({ project, index }) {
 export default function Home() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [heroVisible, setHeroVisible] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null); // ✅ lives here
 
   useEffect(() => {
     const t = setTimeout(() => setHeroVisible(true), 100);
@@ -138,7 +140,7 @@ export default function Home() {
       className="bg-white text-black"
       style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
     >
-      {/* Search icon — fixed top right always */}
+      {/* Search icon */}
       <button
         onClick={() => setSearchOpen(true)}
         className="fixed top-5 right-5 z-50 p-1 hover:opacity-40 transition-opacity duration-300"
@@ -171,17 +173,13 @@ export default function Home() {
         </div>
       )}
 
-      {/* HERO — full screen video */}
-      <header
-        className="relative w-full bg-black overflow-hidden"
-        style={{ height: "100svh" }}
-      >
+      {/* HERO */}
+      <header className="relative w-full bg-black overflow-hidden" style={{ height: "100svh" }}>
         <video
           className="absolute inset-0 w-full h-full object-cover opacity-90"
           autoPlay muted loop playsInline
           src="https://kaanarchitecten.com/media/_960xauto-q60/KAAN-Architecten_The-Learnd_cut_30s-3-2-02.mp4"
         />
-        {/* Studio name — bottom center */}
         <div
           className={`absolute bottom-10 left-1/2 -translate-x-1/2 z-10 transition-all duration-1000 ease-out ${
             heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
@@ -193,26 +191,20 @@ export default function Home() {
         </div>
       </header>
 
-      {/* MAIN — split layout: sticky left + scrolling right */}
+      {/* MAIN split layout */}
       <div className="flex" style={{ minHeight: "100vh" }}>
 
-        {/* LEFT — sticky nav */}
+        {/* LEFT sticky nav */}
         <div
           className="hidden lg:flex flex-col justify-start pt-7 px-6"
-          style={{
-            width: "50%",
-            position: "sticky",
-            top: 0,
-            height: "100vh",
-            flexShrink: 0,
-          }}
+          style={{ width: "50%", position: "sticky", top: 0, height: "100vh", flexShrink: 0 }}
         >
           <nav aria-label="Main menu">
             <ul>
               {["About", "Work", "Repository"].map((item) => (
                 <li key={item} className="border-b border-black">
                   <a
-                    href={`/${item.toLowerCase()}`}
+                    href={`/${item}`}
                     className="block font-light leading-none py-2 uppercase hover:opacity-30 transition-opacity duration-300"
                     style={{ fontSize: "clamp(2.8rem, 5.5vw, 5.5rem)", letterSpacing: "-0.02em" }}
                   >
@@ -224,17 +216,20 @@ export default function Home() {
           </nav>
         </div>
 
-        {/* RIGHT — scrollable projects + news */}
-        <div
-          className="w-full lg:w-1/2 pt-7 px-6 pb-24"
-          style={{ flexShrink: 0 }}
-        >
+        {/* RIGHT scrollable */}
+        <div className="w-full lg:w-1/2 pt-7 px-6 pb-24" style={{ flexShrink: 0 }}>
+
           {/* Projects */}
           <section>
             <h2 className="sr-only">Projects</h2>
             <div className="space-y-8">
               {projects.map((project, i) => (
-                <ProjectTeaser key={project.id} project={project} index={i} />
+                <ProjectTeaser
+                  key={project.id}
+                  project={project}
+                  index={i}
+                  onSelect={setSelectedProject}  // ✅ passes setter down
+                />
               ))}
             </div>
           </section>
@@ -264,19 +259,13 @@ export default function Home() {
       {/* FOOTER */}
       <footer className="border-t border-black px-6 py-4">
         <div className="flex flex-wrap justify-between items-center gap-4">
-          <a
-            href="/"
-            className="text-[10px] uppercase tracking-[0.25em] font-light hover:opacity-40 transition-opacity"
-          >
+          <a href="/" className="text-[10px] uppercase tracking-[0.25em] font-light hover:opacity-40 transition-opacity">
             Baha Architecture
           </a>
           <ul className="flex flex-wrap gap-6 items-center">
             {["Contact", "News Archive", "Instagram", "LinkedIn", "Privacy Policy"].map((item) => (
               <li key={item}>
-                <a
-                  href="#"
-                  className="text-[10px] font-light hover:opacity-40 transition-opacity duration-300"
-                >
+                <a href="#" className="text-[10px] font-light hover:opacity-40 transition-opacity duration-300">
                   {item}
                 </a>
               </li>
@@ -285,6 +274,15 @@ export default function Home() {
           </ul>
         </div>
       </footer>
+
+      {/* ✅ Modal — renders over everything when a project is selected */}
+      {selectedProject && (
+        <Projectmodal
+          project={selectedProject}
+          onClose={() => setSelectedProject(null)}
+          onProjectChange={(rel) => setSelectedProject(rel)}
+        />
+      )}
     </div>
   );
 }

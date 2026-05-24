@@ -4,6 +4,8 @@ import './App.css'
 import { Route, Routes } from 'react-router'
 import Home from './components/Home'
 import Noaccess from './components/Noaccess'
+import ProjectModal from './components/Projectmodal.jsx'
+import About from './components/About.jsx'
 
 function App() {
  
@@ -17,6 +19,8 @@ function App() {
     <Routes>
 
       <Route path='/' element={<Home />} />
+      <Route path='/Projectmodal/:slug' element={<ProjectModal />} />
+      <Route path='/About' element={<About />} />
 
     
 
