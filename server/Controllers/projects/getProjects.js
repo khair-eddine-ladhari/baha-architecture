@@ -2,8 +2,8 @@ import Project from "../../Models/Projects.js";
 
 export const getProjects = async (req, res) => {
   try {
-    const projects = await Project.find({ published: true })
-      .select("title slug location year category cover_image")
+    const projects = await Project.find()
+      .select("title slug location year category cover_image description images")
       .sort({ createdAt: -1 });
 
     res.status(200).json(projects);

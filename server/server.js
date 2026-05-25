@@ -9,7 +9,7 @@ import"./security/passport.js";
 import authRouter from "./Routes/authRouter.js";
 import projectsRouter from "./Routes/projectsRouter.js";
 import newsRouter from "./Routes/newsRouter.js";
-
+import sendmessageRouter from "./Routes/sendmessageRouter.js";
 // config
 dotenv.config();
 
@@ -46,12 +46,23 @@ app.use("/", authRouter);
 app.use("/api", projectsRouter);
 app.use("/api", newsRouter);
 
+
+
+//about sendmessage
+app.use("/api/messages", sendmessageRouter);
+
+
 // ========================
 // 404
 // ========================
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
 });
+
+
+
+//========================
+
 
 // ========================
 // START
