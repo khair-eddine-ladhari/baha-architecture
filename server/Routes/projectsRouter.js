@@ -27,6 +27,15 @@ const adminAuth = [
 router.get("/projects", getProjects);
 router.get("/projects/:slug", getProjectBySlug);
 
+// building in th work page )
+
+import { getBuildings, getindex, getProjectswork } from "../Controllers/projects/getProjects.js";
+
+
+router.get("/buildings", getBuildings);
+router.get("/index", getindex);
+router.get("/projectswork", getProjectswork);
+
 // ========================
 // ADMIN
 // ========================

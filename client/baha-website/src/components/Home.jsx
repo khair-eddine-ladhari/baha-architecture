@@ -182,7 +182,7 @@ export default function Home() {
         >
           <nav aria-label="Main menu">
             <ul>
-              {["About", "Work", "Repository"].map((item) => (
+              {["About", "Work", "Contact"].map((item) => (
                 <li key={item} className="border-b border-black">
                   <a
                     href={`/${item}`}

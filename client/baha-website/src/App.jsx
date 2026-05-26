@@ -7,6 +7,8 @@ import Noaccess from './components/Noaccess'
 import ProjectModal from './components/Projectmodal.jsx'
 import About from './components/About.jsx'
 import Work from './components/Work.jsx'
+import Contact from './components/Contact.jsx'
+
 
 function App() {
  
@@ -23,6 +25,10 @@ function App() {
       <Route path='/Projectmodal/:slug' element={<ProjectModal />} />
       <Route path='/About' element={<About />} />
       <Route path='/Work' element={<Work />} />
+      <Route path='/Contact' element={<Contact />} />
+      <Route path='/Home' element={<Home />} />
+
+      
 
     
 

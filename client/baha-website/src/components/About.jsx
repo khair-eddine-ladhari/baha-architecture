@@ -24,7 +24,6 @@ const awards = [
 // Slideshow component
 function Slideshow() {
   const [current, setCurrent] = useState(0);
-  const [loaded, setLoaded] = useState({});
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -41,7 +40,6 @@ function Slideshow() {
           src={src}
           alt=""
           loading="lazy"
-          onLoad={() => setLoaded(p => ({ ...p, [i]: true }))}
           className="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
           style={{ opacity: i === current ? 1 : 0 }}
         />
@@ -178,10 +176,6 @@ function RegisterSection({ id, title, children, defaultOpen = true }) {
 export default function About() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("practice");
-  const firstNameRef = useRef(null);
-  const lastNameRef = useRef(null);
-  const emailRef = useRef(null);
-
 
   // track scroll to highlight active section in top nav
   useEffect(() => {
@@ -203,30 +197,6 @@ export default function About() {
 
 
 
-  const funsubscribe = async () => {
-  try {
-    const firstName = firstNameRef.current.value;
-    const email = emailRef.current.value;
-    const lastName = lastNameRef.current.value;
-
-    const response = await axios.post(`${API_URL}/api/messages`, {
-      firstName,
-      email,
-      lastName,
-    });
-
-    console.log("SUBSCRIBE RESPONSE:", response.data);
-
-    firstNameRef.current.value = "";
-    emailRef.current.value = "";
-    lastNameRef.current.value = "";
-
-    alert("You have successfully subscribed to our newsletter!");
-
-  } catch (error) {
-    console.error("Error subscribing:", error);
-  }
-};
 
 
 
@@ -276,9 +246,11 @@ export default function About() {
         {/* left: nav links */}
         <nav className="flex items-center gap-8">
           {[
-            { label: "About", href: "/about", active: true },
-            { label: "Work", href: "/work" },
-            { label: "Repository", href: "/repository" },
+             { label: "Home", href: "/Home" },
+            { label: "About", href: "/About", active: true },
+            { label: "Work", href: "/Work" },
+            { label: "Contact", href: "/Contact" },
+           
           ].map(item => (
             <a
               key={item.label}
@@ -296,15 +268,7 @@ export default function About() {
         </a>
 
         {/* right: search */}
-        <button
-          onClick={() => setSearchOpen(true)}
-          className="p-1 hover:opacity-40 transition-opacity"
-        >
-          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor">
-            <circle cx="9.5" cy="9.5" r="7" strokeWidth="1.2" />
-            <path d="M15 15L19 19" strokeWidth="1.2" strokeLinecap="round" />
-          </svg>
-        </button>
+    
       </header>
 
       {/* SUB NAV — practice / contact links */}
@@ -369,93 +333,7 @@ export default function About() {
         </RegisterSection>
 
         {/* ── CONTACT SECTION ── */}
-        <RegisterSection id="contact" title="Contact" defaultOpen={true}>
-
-          <Reveal className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-4xl">
-
-            {/* Offices */}
-            <div className="space-y-8">
-              {[
-                {
-                  city: "Tunis",
-                  address: ["Avenue Habib Bourguiba", "1001 Tunis", "Tunisia", "T +216 71 000 000"],
-                },
-                {
-                  city: "Sfax",
-                  address: ["Rue de la République", "3000 Sfax", "Tunisia"],
-                },
-              ].map(office => (
-                <div key={office.city}>
-                  <h3 className="text-xs uppercase tracking-widest font-light mb-2">{office.city}</h3>
-                  {office.address.map((line, i) => (
-                    <p key={i} className="text-xs font-light leading-relaxed text-gray-600">{line}</p>
-                  ))}
-                </div>
-              ))}
-            </div>
-
-            {/* Inquiries */}
-            <div className="space-y-8">
-                
-              {[
-                { label: "General Inquiries", lines: ["info@bahaarchitecture.com", "T +216 71 000 000"] },
-                { label: "Media Inquiries", lines: ["press@bahaarchitecture.com"] },
-                { label: "Acquisition", lines: ["bd@bahaarchitecture.com"] },
-              ].map(section => (
-                <div key={section.label}>
-                  <h3 className="text-xs uppercase tracking-widest font-light mb-2">{section.label}</h3>
-                  {section.lines.map((line, i) => (
-                    <p key={i} className="text-xs font-light leading-relaxed text-gray-600">{line}</p>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </Reveal>
-
-          {/* Jobs */}
-          <Reveal className="mt-16 max-w-3xl border-t border-black pt-8" delay={100}>
-            <h3 className="text-xs uppercase tracking-widest font-light mb-4">Jobs</h3>
-            <p className="text-xs font-light leading-relaxed text-gray-600">
-              Thank you for your interest in working at Baha Architecture. We are continuously searching for talented people to join our multidisciplinary team. Please feel free to send your application to{" "}
-              <a href="mailto:jobs@bahaarchitecture.com" className="underline hover:opacity-50 transition-opacity">
-                jobs@bahaarchitecture.com
-              </a>
-            </p>
-          </Reveal>
-
-          {/* Newsletter */}
-          <Reveal className="mt-12 max-w-lg border-t border-black pt-8" delay={150}>
-            <h3 className="text-xs uppercase tracking-widest font-light mb-4">Newsletter Signup</h3>
-            <p className="text-xs font-light leading-relaxed text-gray-600 mb-6">
-              If you would like to receive our newsletter, please enter your details below.
-            </p>
-            <div className="space-y-4">
-              {["Email Address", "First Name", "Last Name"].map(field => (
-  <div key={field}>
-    <label className="text-[10px] uppercase tracking-widest font-light block mb-1">{field}</label>
-    <input
-      type={field === "Email Address" ? "email" : "text"}
-      className="w-full border-b border-black bg-transparent text-xs font-light py-2 outline-none focus:border-black placeholder-gray-400"
-      style={{ backgroundColor: "transparent" }}
-      ref={
-        field === "Email Address" ? emailRef :
-        field === "First Name" ? firstNameRef :
-        lastNameRef
-      }
-    />
-  </div>
-))}
-              <button
-  onClick={funsubscribe}
-  className="mt-4 text-xs uppercase tracking-widest font-light border border-black px-6 py-2 hover:bg-black hover:text-[#E1E3E3] transition-colors duration-300"
->
-  Subscribe now
-</button>
-            </div>
-          </Reveal>
-
-        </RegisterSection>
-
+ 
       </main>
 
       {/* FOOTER */}
