@@ -1,56 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import Projectmodal from "./Projectmodal.jsx";
+import axios from "axios";
 
-const projects = [
-  {
-    id: 1,
-    title: "Building 140 CERN",
-    location: "Geneva, CH",
-    slug: "building-140-cern",
-    image: "https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=1400&q=80",
-  },
-  {
-    id: 2,
-    title: "Antwerp Coordination Center — ACC",
-    location: "Antwerp, BE",
-    slug: "antwerp-coordination-center",
-    image: "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1400&q=80",
-  },
-  {
-    id: 3,
-    title: "Netherlands American Cemetery Visitor Center",
-    location: "Margraten, NL",
-    slug: "netherlands-american-cemetery",
-    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1400&q=80",
-  },
-];
-
-const news = [
-  {
-    id: 1,
-    date: "29/04 2026",
-    title: "Appointed lead architect for Schiphol's long-term investment programme",
-    body: "Royal Schiphol Group has appointed the firm as lead architect for the multi-year investment programme that will reshape the airport over the coming decade.",
-  },
-  {
-    id: 2,
-    date: "01/04 2026",
-    title: "Advanced Science Building receives building permit",
-    body: "Located near the EPFL Innovation Park in Lausanne, construction is set to start in spring 2026 and continue until 2030.",
-  },
-  {
-    id: 3,
-    date: "19/03 2026",
-    title: "Design win for Area 19 at Eindhoven University of Technology",
-    body: "Won the tender for Area 19 at TU/e, including the design of a new research and education building and the urban development of a new campus area.",
-  },
-  {
-    id: 4,
-    date: "17/12 2025",
-    title: "Studio expands its leadership towards the future",
-    body: "An expanded leadership structure reflects the firm's ongoing growth and long-term vision.",
-  },
-];
+const API_URL = import.meta.env.VITE_API_URL
+console.log("API URL:", import.meta.env.VITE_API_URL)
 
 function NewsItem({ item }) {
   const [open, setOpen] = useState(false);
@@ -115,7 +68,7 @@ function ProjectTeaser({ project, index, onSelect }) {
       {/* Image */}
       <div className="overflow-hidden w-full" style={{ aspectRatio: "16/10" }}>
         <img
-          src={project.image}
+          src={project.cover_image}
           alt={project.title}
           className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
           loading="lazy"
@@ -129,6 +82,40 @@ export default function Home() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [heroVisible, setHeroVisible] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null); // ✅ lives here
+  const [projects, setProjects] = useState([]);
+  const [news, setNews] = useState([]);
+
+
+
+
+
+
+
+  useEffect(() => {
+    const fetchProjectsandNews = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/api/projects`);
+        setProjects(response.data);
+        console.log("PROJECTS RESPONSE:", response.data);
+        const newsResponse = await axios.get(`${API_URL}/api/news`);
+        setNews(newsResponse.data);
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+      }
+    };
+    fetchProjectsandNews();
+    
+  }, []);
+
+
+
+
+
+
+
+
+
+
 
   useEffect(() => {
     const t = setTimeout(() => setHeroVisible(true), 100);
@@ -140,17 +127,8 @@ export default function Home() {
       className="bg-white text-black"
       style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
     >
-      {/* Search icon */}
-      <button
-        onClick={() => setSearchOpen(true)}
-        className="fixed top-5 right-5 z-50 p-1 hover:opacity-40 transition-opacity duration-300"
-        aria-label="Search"
-      >
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor">
-          <circle cx="9.5" cy="9.5" r="7" strokeWidth="1.2" />
-          <path d="M15 15L19 19" strokeWidth="1.2" strokeLinecap="round" />
-        </svg>
-      </button>
+     
+      
 
       {/* Search modal */}
       {searchOpen && (
@@ -175,21 +153,24 @@ export default function Home() {
 
       {/* HERO */}
       <header className="relative w-full bg-black overflow-hidden" style={{ height: "100svh" }}>
-        <video
-          className="absolute inset-0 w-full h-full object-cover opacity-90"
-          autoPlay muted loop playsInline
-          src="https://kaanarchitecten.com/media/_960xauto-q60/KAAN-Architecten_The-Learnd_cut_30s-3-2-02.mp4"
-        />
-        <div
-          className={`absolute bottom-10 left-1/2 -translate-x-1/2 z-10 transition-all duration-1000 ease-out ${
-            heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
-          }`}
-        >
-          <span className="text-white text-[10px] uppercase tracking-[0.35em] font-light">
-            Baha Architecture
-          </span>
-        </div>
-      </header>
+  <video
+    className="absolute inset-0 w-full h-full object-cover opacity-90"
+    autoPlay muted loop playsInline
+    src="https://kaanarchitecten.com/media/_960xauto-q60/KAAN-Architecten_The-Learnd_cut_30s-3-2-02.mp4"
+  />
+  <div
+    className={`absolute top-10 left-1/2 -translate-x-1/2 z-10 transition-all duration-1000 ease-out ${
+      heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
+    }`}
+  >
+    <span
+      className="text-white font-bold uppercase tracking-widest"
+      style={{ fontSize: "clamp(2rem, 6vw, 5rem)", letterSpacing: "0.15em" }}
+    >
+      Baha Arch
+    </span>
+  </div>
+</header>
 
       {/* MAIN split layout */}
       <div className="flex" style={{ minHeight: "100vh" }}>
@@ -263,7 +244,7 @@ export default function Home() {
             Baha Architecture
           </a>
           <ul className="flex flex-wrap gap-6 items-center">
-            {["Contact", "News Archive", "Instagram", "LinkedIn", "Privacy Policy"].map((item) => (
+            {["Contact",  "Privacy Policy"].map((item) => (
               <li key={item}>
                 <a href="#" className="text-[10px] font-light hover:opacity-40 transition-opacity duration-300">
                   {item}

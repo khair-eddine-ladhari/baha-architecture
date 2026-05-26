@@ -1,4 +1,8 @@
 import { useState, useEffect, useRef } from "react";
+import axios from "axios";
+
+const API_URL = import.meta.env.VITE_API_URL;
+console.log("API URL:", API_URL);
 
 const slides = [
   "https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=1400&q=80",
@@ -174,6 +178,10 @@ function RegisterSection({ id, title, children, defaultOpen = true }) {
 export default function About() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("practice");
+  const firstNameRef = useRef(null);
+  const lastNameRef = useRef(null);
+  const emailRef = useRef(null);
+
 
   // track scroll to highlight active section in top nav
   useEffect(() => {
@@ -189,6 +197,47 @@ export default function About() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+
+
+
+
+
+  const funsubscribe = async () => {
+  try {
+    const firstName = firstNameRef.current.value;
+    const email = emailRef.current.value;
+    const lastName = lastNameRef.current.value;
+
+    const response = await axios.post(`${API_URL}/api/messages`, {
+      firstName,
+      email,
+      lastName,
+    });
+
+    console.log("SUBSCRIBE RESPONSE:", response.data);
+
+    firstNameRef.current.value = "";
+    emailRef.current.value = "";
+    lastNameRef.current.value = "";
+
+    alert("You have successfully subscribed to our newsletter!");
+
+  } catch (error) {
+    console.error("Error subscribing:", error);
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
 
   return (
     <div
@@ -347,6 +396,7 @@ export default function About() {
 
             {/* Inquiries */}
             <div className="space-y-8">
+                
               {[
                 { label: "General Inquiries", lines: ["info@bahaarchitecture.com", "T +216 71 000 000"] },
                 { label: "Media Inquiries", lines: ["press@bahaarchitecture.com"] },
@@ -381,18 +431,26 @@ export default function About() {
             </p>
             <div className="space-y-4">
               {["Email Address", "First Name", "Last Name"].map(field => (
-                <div key={field}>
-                  <label className="text-[10px] uppercase tracking-widest font-light block mb-1">{field}</label>
-                  <input
-                    type={field === "Email Address" ? "email" : "text"}
-                    className="w-full border-b border-black bg-transparent text-xs font-light py-2 outline-none focus:border-black placeholder-gray-400"
-                    style={{ backgroundColor: "transparent" }}
-                  />
-                </div>
-              ))}
-              <button className="mt-4 text-xs uppercase tracking-widest font-light border border-black px-6 py-2 hover:bg-black hover:text-[#E1E3E3] transition-colors duration-300">
-                Subscribe now
-              </button>
+  <div key={field}>
+    <label className="text-[10px] uppercase tracking-widest font-light block mb-1">{field}</label>
+    <input
+      type={field === "Email Address" ? "email" : "text"}
+      className="w-full border-b border-black bg-transparent text-xs font-light py-2 outline-none focus:border-black placeholder-gray-400"
+      style={{ backgroundColor: "transparent" }}
+      ref={
+        field === "Email Address" ? emailRef :
+        field === "First Name" ? firstNameRef :
+        lastNameRef
+      }
+    />
+  </div>
+))}
+              <button
+  onClick={funsubscribe}
+  className="mt-4 text-xs uppercase tracking-widest font-light border border-black px-6 py-2 hover:bg-black hover:text-[#E1E3E3] transition-colors duration-300"
+>
+  Subscribe now
+</button>
             </div>
           </Reveal>
 
