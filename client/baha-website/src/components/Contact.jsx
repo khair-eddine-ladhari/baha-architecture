@@ -2,10 +2,12 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
+import Navbar from "./Navbarcontact";
 const NAV_LINKS = [
   { label: "HOME", href: "/" },
   { label: "WORK", href: "/Work" },
   { label: "ABOUT", href: "/About" },
+  { label: "CONTACT", href: "/Contact" }
   
  
 ];
@@ -83,59 +85,7 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-[#efefef] font-[Helvetica,Arial,sans-serif] text-[#222]">
       {/* ─── NAV ─── */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#efefef] border-b border-[#efefef]">
-        <div className="max-w-[1200px] mx-auto px-8 sm:px-12 lg:px-20 h-[60px] flex items-center justify-between">
-          {/* Logo */}
-          <a href="/" className="text-[13px] tracking-[0.3em] font-normal uppercase select-none">
-            BAHA ARCH
-          </a>
-
-          {/* Desktop nav */}
-          <ul className="hidden md:flex items-center gap-6 lg:gap-8">
-            {NAV_LINKS.map((link) => (
-              <li key={link.label}>
-                <a
-                  href={link.href}
-                  className={`text-[11px] tracking-[0.18em] uppercase transition-opacity hover:opacity-60 ${
-                    link.active ? "underline underline-offset-4" : ""
-                  }`}
-                >
-                  {link.label}
-                  {link.hasDropdown && <ChevronDown />}
-                </a>
-              </li>
-            ))}
-           
-          </ul>
-
-          {/* Mobile hamburger */}
-          <button
-            className="md:hidden flex flex-col gap-1.5 p-1"
-            onClick={() => setMobileOpen(!mobileOpen)}
-          >
-            <span className="block w-5 h-px bg-[#222]" />
-            <span className="block w-5 h-px bg-[#222]" />
-            <span className="block w-5 h-px bg-[#222]" />
-          </button>
-        </div>
-
-        {/* Mobile menu */}
-        {mobileOpen && (
-          <div className="md:hidden bg-[#efefef] border-t border-[#ddd]">
-            <div className="max-w-[1200px] mx-auto px-8 sm:px-12 py-4 flex flex-col gap-4">
-            {NAV_LINKS.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                className={`text-[11px] tracking-[0.18em] uppercase ${link.active ? "underline" : ""}`}
-              >
-                {link.label}
-              </a>
-            ))}
-            </div>
-          </div>
-        )}
-      </nav>
+      <Navbar />
 
       {/* ─── MAIN CONTENT ─── */}
       <main className="pt-[60px]">
@@ -151,25 +101,18 @@ export default function ContactPage() {
               <div className="flex flex-col gap-6 text-[13px] leading-relaxed">
                 <a
                   href="mailto:info@minimalstudio.es"
-                  className="hover:opacity-60 transition-opacity"
+                  className="text-[0.65rem] uppercase tracking-widest font-bold text-gray-600"
                 >
                   info@minimalstudio.es
                 </a>
 
                 <div>
-                  <p>Calle Teodor Canet, 8</p>
-                  <p>07400 Puerto de Alcudia. (Baleares) España</p>
-                  <a
-                    href="https://maps.google.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[10px] tracking-[0.15em] uppercase underline underline-offset-2 hover:opacity-60 transition-opacity mt-1 inline-block"
-                  >
-                    VIEW ON GOOGLE MAPS
-                  </a>
+                  <p className="text-[0.65rem] uppercase tracking-widest font-bold text-gray-600">Calle Teodor Canet, 8</p>
+                  <p className="text-[0.65rem] uppercase tracking-widest font-bold text-gray-600">07400 Puerto de Alcudia. (Baleares) España</p>
+                  
                 </div>
 
-                <a href="tel:+34660671878" className="hover:opacity-60 transition-opacity">
+                <a href="tel:+34660671878" className="text-[0.65rem] uppercase tracking-widest font-bold text-gray-600">
                   +34 660 671 878
                 </a>
               </div>
@@ -243,50 +186,43 @@ export default function ContactPage() {
 
         {/* ─── FOOTER ─── */}
         <footer className="bg-[#efefef] border-t border-[#ddd]">
-          <div className="max-w-[1200px] mx-auto px-8 sm:px-12 lg:px-20 py-14 grid grid-cols-1 md:grid-cols-[30%_40%_30%] gap-10 md:gap-0 md:items-start">
+          <div className="max-w-[1200px] mx-auto flex justify-between items-start px-8 sm:px-12 lg:px-20 py-14">
+  
+  {/* Logo mark */}
+  <div>
+    <a
+      href="/"
+      className="text-[2.65rem] uppercase tracking-widest font-bold text-gray-600"
+    >
+      BAHA ARCH
+    </a>
+  </div>
 
-            {/* Logo mark */}
-            <div>
-              <a href="/" className="text-[13px] tracking-[0.3em] font-normal uppercase select-none">
-                BAHA ARCH
-              </a>
-            </div>
+  {/* Contact info */}
+  <div className="flex flex-col gap-2 text-[12px] leading-relaxed">
+    <a
+      href="tel:+34600655350"
+      className="text-[0.65rem] uppercase tracking-widest font-bold text-gray-600"
+    >
+      +34 600 655 350
+    </a>
 
-            {/* Contact info */}
-            <div className="flex flex-col gap-2 text-[12px] leading-relaxed">
-              <a href="tel:+34600655350" className="hover:opacity-60 transition-opacity">+34 600 655 350</a>
-              <a href="mailto:info@minimalstudio.es" className="hover:opacity-60 transition-opacity">info@minimalstudio.es</a>
-              <p>Calle Teodor Canet, 8, 07400</p>
-              <p>Puerto de Alcudia, Mallorca</p>
-              <a
-                href="https://maps.google.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:opacity-60 transition-opacity underline underline-offset-2"
-              >
-                View on Google Maps
-              </a>
+    <a
+      href="mailto:info@minimalstudio.es"
+      className="text-[0.65rem] uppercase tracking-widest font-bold text-gray-600"
+    >
+      info@minimalstudio.es
+    </a>
 
-              {/* Social icons */}
-             
-            </div>
+    <p className="text-[0.65rem] uppercase tracking-widest font-bold text-gray-600">
+      Calle Teodor Canet, 8, 07400
+    </p>
 
-            {/* Links */}
-            <div className="flex flex-col gap-6 text-[12px]">
-              <div>
-                <p className="mb-1">Subscribe to our newsletter</p>
-                <a href="#" className="flex items-center gap-1.5 text-[10px] tracking-[0.2em] uppercase border-b border-[#222] pb-0.5 w-fit hover:opacity-50 transition-opacity">
-                  SUBSCRIBE <ArrowRight size={11} />
-                </a>
-              </div>
-              <div>
-                <p className="mb-1">Visit our store</p>
-                <a href="#" className="flex items-center gap-1.5 text-[10px] tracking-[0.2em] uppercase border-b border-[#222] pb-0.5 w-fit hover:opacity-50 transition-opacity">
-                  VISIT <ArrowRight size={11} />
-                </a>
-              </div>
-            </div>
-          </div>
+    <p className="text-[0.65rem] uppercase tracking-widest font-bold text-gray-600">
+      Puerto de Alcudia, Mallorca
+    </p>
+  </div>
+</div>
         </footer>
       </main>
     </div>

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-
+import NaNvbar from "./Navbar";
 
 const API_URL = import.meta.env.VITE_API_URL
 
@@ -98,7 +98,7 @@ function WorkGrid({ items, keyPrefix, delayStep }) {
 function KaanLogo() {
   return (
     <div>
-      <p>BAHA ARCH</p>
+      <p>BAHA ARCHITECTURE</p>
     </div>
   );
 }
@@ -288,30 +288,11 @@ useEffect(() => {
             max-width: 68%;
           }
         }
-        ::-webkit-scrollbar { width: 0; }
+        
       `}</style>
 
       {/* FIXED TOP HEADER — z:500 */}
-      <header style={{
-        position: "fixed", top: 0, left: 0, right: 0, height: HEADER_H, zIndex: 500,
-        background: headerScrolled ? "rgba(255,255,255,0.93)" : "#fff",
-        backdropFilter: headerScrolled ? "blur(10px)" : "none",
-        borderBottom: "1px solid #e0e0e0",
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "0 0.75rem", transition: "background 0.25s",
-      }}>
-        <KaanLogo width={80} />
-        <nav style={{ display: "flex", alignItems: "center", gap: "2rem" }}>
-          {["Home", "Work", "Contact", "About"].map(n => (
-            <a key={n} href={`${n.toLowerCase()}`} style={{
-              fontSize: "0.72rem", fontFamily: FONT, fontWeight: 400,
-              letterSpacing: "0.02em", textDecoration: "none", color: "#000",
-              borderBottom: n === "Work" ? "1px solid #000" : "none", paddingBottom: 1,
-            }}>{n}</a>
-          ))}
-          
-        </nav>
-      </header>
+      <NaNvbar name="Work" />
 
       {/*
         LAYOUT STRATEGY:
