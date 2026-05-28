@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom"; // ✅
 
 
 
@@ -15,15 +16,15 @@ const LINK_CLS = "text-[0.65rem] uppercase tracking-widest font-bold text-black 
 
 
 
-    function KaanLogo() {
+function KaanLogo() {
+  const navigate = useNavigate();
+
   return (
     <div>
-      <p>BAHA ARCHITECTURE</p>
+      <p  className="cursor-pointer" onClick={() => navigate('/')}>BAHA ARCHITECTURE</p>
     </div>
   );
 }
-
-
 
   return (
     <header style={{

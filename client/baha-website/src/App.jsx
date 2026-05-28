@@ -28,6 +28,9 @@ function App() {
       <Route path='/Contact' element={<Contact />} />
       <Route path='/Home' element={<Home />} />
 
+      <Route path='/Projectmodal/:slug' element={<ProjectModal />} />
+   
+
       
 
     

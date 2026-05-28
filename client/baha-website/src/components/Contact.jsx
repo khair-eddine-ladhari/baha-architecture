@@ -193,7 +193,7 @@ export default function ContactPage() {
   <div>
     <a
       href="/"
-      className="text-[2.65rem] uppercase tracking-widest font-bold text-gray-600"
+      className="text-[2.65rem] uppercase tracking-widest font-bold text-black"
     >
       BAHA ARCH
     </a>

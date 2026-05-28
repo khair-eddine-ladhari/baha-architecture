@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import Projectmodal from "./Projectmodal.jsx";
 import axios from "axios";
 import Footer from "./Footer.jsx";
+import { useNavigate } from "react-router-dom";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const FONT = { fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" };
@@ -44,10 +45,30 @@ function ProjectTeaser({ project, index, onSelect, titleRef }) {
     return () => observer.disconnect();
   }, []);
 
+  const navigate = useNavigate();
+  const functserchbyslug = (project) => {
+    
+    navigate(`/Projectmodal/${project.slug}`);
+
+
+    
+  }
+
+
+
+
+
+
+
+
+
+
+
+
   return (
     <div
       ref={ref}
-      onClick={() => onSelect(project)}
+      onClick={()=>functserchbyslug(project)}
       className={`group cursor-pointer transition-all duration-700 ease-out ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
       style={{ transitionDelay: `${index * 120}ms`, marginBottom: "2rem" }}
     >
@@ -253,13 +274,7 @@ export default function Home() {
       <Footer />
      
 
-      {selectedProject && (
-        <Projectmodal
-          project={selectedProject}
-          onClose={() => setSelectedProject(null)}
-          onProjectChange={(rel) => setSelectedProject(rel)}
-        />
-      )}
+    
     </div>
   );
 }
