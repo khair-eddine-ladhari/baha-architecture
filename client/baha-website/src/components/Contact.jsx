@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 import Navbar from "./Navbarcontact";
+import Footer from "./Footer";
 const NAV_LINKS = [
   { label: "HOME", href: "/" },
   { label: "WORK", href: "/Work" },
@@ -94,7 +95,7 @@ export default function ContactPage() {
 
             {/* ── Left: Info ── */}
             <div className="md:pr-12">
-              <h1 className="text-[11px] tracking-[0.25em] uppercase mb-12 md:mb-16">
+              <h1 className="text-[24px] tracking-[0.25em] uppercase mb-12 md:mb-16">
                 CONTACT
               </h1>
 

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import NaNvbar from "./Navbar";
+import Footer from "./Footer";
 
 const API_URL = import.meta.env.VITE_API_URL
 
@@ -178,7 +179,7 @@ useEffect(() => {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: "0 0.75rem",
+    padding: "0 2.2rem",
     height: SECTION_H,
     // Guarantee sticky always works — no transform, no overflow on ancestors
     marginLeft: 0,
@@ -219,7 +220,7 @@ useEffect(() => {
           display: grid;
           grid-template-columns: repeat(3, minmax(0, 1fr));
           gap: 2.6rem 1rem;
-          padding: 1.25rem 0.75rem 3rem;
+          padding: 1.25rem 2.2rem 3rem;
         }
         .kaan-work-grid .kaan-card {
           width: 100%;
@@ -279,7 +280,7 @@ useEffect(() => {
           .kaan-work-grid {
             grid-template-columns: 1fr;
             gap: 2rem;
-            padding: 1rem 0.75rem 2.5rem;
+            padding: 1rem 2.2rem 2.5rem;
           }
           .work-card-title {
             min-height: auto;
@@ -333,16 +334,8 @@ useEffect(() => {
         <WorkGrid items={INDEX_ITEMS} keyPrefix="index" delayStep={0.035} />
 
         {/* Footer */}
-        <footer style={{ borderTop: "1px solid #e0e0e0", padding: "0 0.75rem" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "0.5rem", minHeight: "2.5rem", padding: "0.5rem 0" }}>
-            <KaanLogo width={60} />
-            <nav style={{ display: "flex", gap: "1.5rem", flexWrap: "wrap" }}>
-              {["Contact", "News Archive", "Instagram", "LinkedIn", "Imprint and Privacy Policy", "© KAAN Architecten"].map(item => (
-                <a key={item} href="#" style={{ fontSize: "0.63rem", fontFamily: FONT, textDecoration: "none", color: "#000", letterSpacing: "0.02em" }}>{item}</a>
-              ))}
-            </nav>
-          </div>
-        </footer>
+        <Footer/>
+       
 
       </div>
 
@@ -361,7 +354,7 @@ useEffect(() => {
                 background: "#fff", border: "none", borderBottom: "1px solid #000",
                 cursor: "pointer", height: SECTION_H, width: "100%",
                 display: "flex", alignItems: "center", justifyContent: "space-between",
-                padding: "0 0.75rem", color: "#000", textAlign: "left",
+                padding: "0 2.2rem", color: "#000", textAlign: "left",
               }}
             >
               <span style={stickyTitle}>{label}</span>

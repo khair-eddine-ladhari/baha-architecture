@@ -33,10 +33,7 @@ const projectSchema = new mongoose.Schema(
       required: true,
     },
     images: [
-      {
-        url: { type: String },      // cloudinary URL
-        public_id: { type: String } // cloudinary ID (for deleting)
-      }
+      { type: String }
     ],
     published: {
       type: Boolean,

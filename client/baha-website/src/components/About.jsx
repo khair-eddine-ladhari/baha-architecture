@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import  Navbar from "./Navbar"; 
+import Footer from "./Footer";
 /* ── Hooks ───────────────────────────────────────────────────────────────── */
 function useInView(threshold = 0.12) {
   const ref = useRef(null);
@@ -98,15 +99,39 @@ const NAV_LINKS = ["Home", "Works", "About", "Journal", "Company", "Designers"];
      (this scrolls normally ON TOP of the sticky wordmark)
 ──────────────────────────────────────────────────────────────────────────── */
 function HeroWithStickyWordmark({ heroVisible }) {
-  return (
-    <div className="relative" style={{ marginTop: "64px" }}>
+  const containerRef = useRef(null);
+  const [fixed, setFixed] = useState(true);
+  const [hidden, setHidden] = useState(false);
 
-      {/* STICKY wordmark container — stays fixed while user scrolls */}
+  useEffect(() => {
+    const onScroll = () => {
+      const el = containerRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      // Hide wordmark once gallery has scrolled over it
+      setHidden(rect.top < -window.innerHeight);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <div ref={containerRef} style={{ position: "relative", height: "200vh", marginTop: "64px" }}>
+
+      {/* WORDMARK — fixed to screen until gallery covers it */}
       <div
-        className="sticky top-0 w-full flex flex-col"
-        style={{ height: "100vh", zIndex: 1 }}
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100vh",
+          zIndex: 1,
+          display: hidden ? "none" : "flex",
+          flexDirection: "column",
+          pointerEvents: "none",
+        }}
       >
-        {/* "About" label top-left */}
         <div
           className="px-9 pt-10 text-[14px] tracking-[0.01em] text-neutral-900"
           style={{
@@ -118,7 +143,6 @@ function HeroWithStickyWordmark({ heroVisible }) {
           About
         </div>
 
-        {/* Giant centered wordmark */}
         <div
           className="flex-1 flex items-center justify-center overflow-hidden"
           style={{
@@ -134,38 +158,19 @@ function HeroWithStickyWordmark({ heroVisible }) {
             BAHA ARCH<sup style={{ fontSize: "0.1em", verticalAlign: "super", fontWeight: 200, letterSpacing: 0 }}>®</sup>
           </h1>
         </div>
-
-        {/* Desc bottom-right */}
-        <div
-          className="flex-col items-end text-right px-9 pb-14"
-          style={{
-            opacity: heroVisible ? 1 : 0,
-            transition: "opacity .9s ease .75s",
-          }}
-        >
-          <p className="text-[0.65rem] uppercase tracking-widest font-bold text-gray-600">
-            BAHA ARCH is a grand project by HITOBA DESIGN —
-          </p>
-          <p className="text-[0.65rem] uppercase tracking-widest font-bold text-gray-600">
-             enriching both people and places of work
-          </p>
-          <p className="text-[0.65rem] uppercase tracking-widest font-bold text-gray-600">
-             together with clients.
-          </p>
-        </div>
       </div>
 
-      {/* GALLERY — scrolls over the sticky wordmark, bg white covers it */}
+      {/* GALLERY — normal flow, starts after 100vh, bg white covers the fixed wordmark */}
       <div
-        className="relative bg-white"
-        style={{ zIndex: 10 }}
+        className="bg-white w-full"
+        style={{ position: "absolute", top: "100vh", left: 0, right: 0, zIndex: 10 }}
       >
         <Gallery />
       </div>
+
     </div>
   );
 }
-
 /* ── Gallery (drag-to-scroll horizontal strip) ────────────────────────────── */
 function Gallery() {
   const trackRef = useRef(null);
@@ -261,9 +266,9 @@ function StyleRow({ num, tag, title, body, delay }) {
         </span>
       </div>
       <div>
-        <p className="text-[11.5px] text-neutral-400 tracking-[0.07em] mb-[18px]">{tag}</p>
-        <h3 className="font-medium leading-[1.3] mb-5 whitespace-pre-line" style={{ fontSize: "clamp(20px,2.2vw,32px)" }}>{title}</h3>
-        <p className="text-[13.5px] leading-[1.95] text-neutral-500 max-w-[440px]">{body}</p>
+        <p className="text-[0.65rem] uppercase tracking-widest font-bold text-gray-600">{tag}</p>
+        <h3 className="text-[0.65rem] pt-1.5 uppercase tracking-widest font-bold text-black" style={{ fontSize: "clamp(20px,2.2vw,32px)" }}>{title}</h3>
+        <p className="text-[15.5px] leading-[1.95] pt-3.5 text-neutral-500 max-w-[440px]">{body}</p>
       </div>
     </div>
   );
@@ -384,25 +389,8 @@ The office is a place.<sup style={{ fontSize: ".18em", verticalAlign: "super", f
        
 
         {/* Footer */}
-         <footer className="border-t border-black px-6 py-1.5">
-        <div className="flex flex-wrap justify-between items-center gap-4">
-          <li className="text-[0.65rem] uppercase tracking-widest font-bold text-gray-600">
-              developed by KHAIR EDDINE LADHARI
-            </li>
-          <ul className="flex flex-wrap gap-6 items-center">
-            {["Contact", "Privacy Policy"].map((item) => (
-              <li key={item}>
-                <a href="#" className={LINK_CLS}>
-                  {item}
-                </a>
-              </li>
-            ))}
-            <li className="text-[0.65rem] uppercase tracking-widest font-bold text-gray-600">
-              © Baha Architecture
-            </li>
-          </ul>
-        </div>
-      </footer>
+        <Footer/>
+         
       </div>
     </div>
   );

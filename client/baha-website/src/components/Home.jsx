@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import Projectmodal from "./Projectmodal.jsx";
 import axios from "axios";
+import Footer from "./Footer.jsx";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const FONT = { fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" };
@@ -73,6 +74,11 @@ function ProjectTeaser({ project, index, onSelect, titleRef }) {
 }
 
 export default function Home() {
+
+
+
+
+  
   const [searchOpen, setSearchOpen] = useState(false);
   const [heroVisible, setHeroVisible] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
@@ -80,6 +86,9 @@ export default function Home() {
   const [news, setNews] = useState([]);
   const [passedCount, setPassedCount] = useState(0);
   const titleRefs = useRef([]);
+
+
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -90,6 +99,7 @@ export default function Home() {
         ]);
         setProjects(projRes.data);
         setNews(newsRes.data);
+        console.log("first project from list:", projRes.data[0]);
       } catch (err) {
         console.error("Fetch error:", err);
       }
@@ -203,14 +213,14 @@ export default function Home() {
           {/* Projects */}
           <section>
             {projects.map((project, i) => (
-              <ProjectTeaser
-                key={project.id}
-                project={project}
-                index={i}
-                onSelect={setSelectedProject}
-                titleRef={(el) => (titleRefs.current[i] = el)}
-              />
-            ))}
+  <ProjectTeaser
+    key={project._id || project.id || project.slug || i}
+    project={project}
+    index={i}
+    onSelect={setSelectedProject}
+    titleRef={(el) => (titleRefs.current[i] = el)}
+  />
+))}
           </section>
 
           {/* News */}
@@ -219,10 +229,10 @@ export default function Home() {
               News
             </h2>
             <ul>
-              {news.map((item) => (
-                <NewsItem key={item.id} item={item} />
-              ))}
-            </ul>
+  {news.map((item) => (
+    <NewsItem key={item._id || item.id || item.title} item={item} />
+  ))}
+</ul>
             <div className="border-t border-black pt-4" />
           </section>
         </div>
@@ -239,25 +249,9 @@ export default function Home() {
       </div>
 
       {/* FOOTER */}
-      <footer className="border-t border-black px-6 py-1.5">
-        <div className="flex flex-wrap justify-between items-center gap-4">
-          <li className="text-[0.65rem] uppercase tracking-widest font-bold text-gray-600">
-              developed by KHAIR EDDINE LADHARI
-            </li>
-          <ul className="flex flex-wrap gap-6 items-center">
-            {["Contact", "Privacy Policy"].map((item) => (
-              <li key={item}>
-                <a href="#" className={LINK_CLS}>
-                  {item}
-                </a>
-              </li>
-            ))}
-            <li className="text-[0.65rem] uppercase tracking-widest font-bold text-gray-600">
-              © Baha Architecture
-            </li>
-          </ul>
-        </div>
-      </footer>
+      
+      <Footer />
+     
 
       {selectedProject && (
         <Projectmodal

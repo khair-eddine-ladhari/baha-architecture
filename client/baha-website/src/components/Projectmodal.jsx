@@ -12,6 +12,10 @@ const ProjectModal = ({ project, onClose}) => {
     document.body.style.overflow = "hidden";
     return () => { document.body.style.overflow = ""; };
   }, []);
+  useEffect(() => {
+  console.log("images:", project.images);
+  console.log("first image object:", project.images?.[0]);
+}, [project]);
 
   // Keyboard close
   useEffect(() => {
@@ -159,10 +163,10 @@ const ProjectModal = ({ project, onClose}) => {
             >
               {pair.map((img, imgIdx) => {
                 const id = `img-${pairIdx}-${imgIdx}`;
-                const url = img.url || img;
+                const url = typeof img === "string" ? img : img.url || img.secure_url || img.path;
                 return (
                   <div
-                    key={imgIdx}
+                    key={id}
                     className="overflow-hidden bg-gray-100 group cursor-zoom-in"
                     style={{
                       aspectRatio: pair.length === 1 ? "16/9" : "4/3",
@@ -232,7 +236,7 @@ const ProjectModal = ({ project, onClose}) => {
                 >
                   <div className="overflow-hidden bg-gray-100 mb-3" style={{ aspectRatio: "4/3" }}>
                     <img
-                      src={rel.cover_image?.url || rel.cover_image}
+                      src={project.cover_image}
                       alt={rel.title}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       loading="lazy"
