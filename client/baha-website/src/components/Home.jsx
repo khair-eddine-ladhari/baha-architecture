@@ -132,7 +132,9 @@ export default function Home() {
       </div>
 
       {/* ── Mobile/tablet hamburger + overlay ── */}
-      <MobileMenu />
+      <div className="lg:hidden">   {/* ← add this wrapper */}
+  <MobileMenu />
+</div>
 
       {/* ══ HERO ══════════════════════════════════════════════════════ */}
       <header className="relative w-full bg-black overflow-hidden" style={{ height: "100svh" }}>

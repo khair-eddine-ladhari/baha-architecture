@@ -2,9 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 
 const HEADER_H = 57.6;
-const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-
-
 
 const Navbar = ({ name }) => {
   const [visible, setVisible] = useState(true);
@@ -13,18 +10,13 @@ const Navbar = ({ name }) => {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-
       if (currentScrollY > lastScrollY.current && currentScrollY > 60) {
-        // Scrolling down past threshold → hide
         setVisible(false);
       } else {
-        // Scrolling up → show
         setVisible(true);
       }
-
       lastScrollY.current = currentScrollY;
     };
-
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -48,34 +40,23 @@ const Navbar = ({ name }) => {
         padding: "0 2.2rem",
         transform: visible ? "translateY(0)" : "translateY(-100%)",
         opacity: visible ? 1 : 0,
-         WebkitMaskImage: "linear-gradient(to bottom, black 60%, transparent 100%)",
-    maskImage: "linear-gradient(to bottom, black 30%, transparent 100%)",
-        transition:
-          "transform 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.35s, background 0.25s",
+        WebkitMaskImage: "linear-gradient(to bottom, black 60%, transparent 100%)",
+        maskImage: "linear-gradient(to bottom, black 30%, transparent 100%)",
+        transition: "transform 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.35s, background 0.25s",
       }}
     >
-      
       <nav style={{ display: "flex", alignItems: "center", gap: "2rem" }}>
-        {["Home", "Work", "About", "Contact"].map((n) => (
-           <a
-    key={n}
-    href={`/${n.toLowerCase()}`}
-    style={{
-      fontSize: "0.82rem",
-      fontFamily: FONT,
-      fontWeight: 400,
-      letterSpacing: "0.02em",
-      textDecoration: "none",
-      color: "#000",
-      
-      paddingBottom: 1,
-      transition: "opacity 0.25s",
-    }}
-    onMouseEnter={(e) => (e.target.style.opacity = "0.2")}
-    onMouseLeave={(e) => (e.target.style.opacity = "1")}
-  >
-    {n}
-  </a>
+        {["Admin", "Home", "Work", "About", "Contact"].map((n) => (
+          <a
+            key={n}
+            href={`/${n.toLowerCase()}`}
+            className="text-[0.65rem] uppercase tracking-widest font-bold text-black hover:opacity-40 transition-opacity duration-[250ms]"
+            style={{ textDecoration: "none", paddingBottom: 1 }}
+            onMouseEnter={(e) => (e.target.style.opacity = "0.2")}
+            onMouseLeave={(e) => (e.target.style.opacity = "1")}
+          >
+            {n}
+          </a>
         ))}
       </nav>
     </header>

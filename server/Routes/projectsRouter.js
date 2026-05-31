@@ -13,7 +13,7 @@ import { uploadProjectImages } from "../Controllers/projects/uploadProjectImages
 import { deleteProjectImage } from "../Controllers/projects/deleteProjectImage.js";
 
 import { createProjectValidator, updateProjectValidator } from "../Validators/projectValidator.js";
-
+import { admindashboard } from "../Controllers/projects/admindashboard.js";
 const router = express.Router();
 
 const adminAuth = [
@@ -40,6 +40,13 @@ router.get("/projectswork", getProjectswork);
 // ADMIN
 // ========================
 
+
+
+
+router.post("/admin",
+  ...adminAuth,
+ admindashboard
+);
 
 
 

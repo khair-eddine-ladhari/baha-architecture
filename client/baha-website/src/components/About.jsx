@@ -124,7 +124,7 @@ function HeroWithStickyWordmark({ heroVisible, isMobile }) {
         flexDirection: "column", pointerEvents: "none",
       }}>
         <div
-          className="pl-2 pt-10 text-[14px] tracking-[0.01em] text-neutral-900"
+          className="pl-[35px] pt-30 text-[14px] tracking-[0.01em] text-neutral-900"
           style={{
             opacity: heroVisible ? 1 : 0,
             transform: heroVisible ? "none" : "translateY(16px)",

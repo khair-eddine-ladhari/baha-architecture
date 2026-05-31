@@ -132,7 +132,7 @@ export default function ContactPage() {
 
         {/* ─── FOOTER ─── */}
         <footer className="bg-[#efefef] border-t border-[#ddd] pl-3.5">
-          <div className="w-full flex flex-col sm:flex-row sm:justify-between sm:items-start gap-8 sm:gap-0 pl-2 pr-4 sm:pr-10 lg:pr-20 py-10 sm:py-14">
+          <div className="w-full flex flex-col sm:flex-row sm:justify-between sm:items-start gap-8 sm:gap-0 pl-5 pr-4 sm:pr-10 lg:pr-20 py-10 sm:py-14">
 
             {/* Logo */}
             <div>
