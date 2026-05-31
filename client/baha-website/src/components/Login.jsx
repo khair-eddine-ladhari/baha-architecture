@@ -1,0 +1,150 @@
+
+
+import { GlobalContext } from "../GlobalState"
+
+import { useState } from "react";
+import axios from "axios";
+const AdminLogin = () => {
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const { login } = useContext(GlobalContext)
+
+  const LABEL_CLS =
+    "text-[0.65rem]  tracking-widest font-bold text-black";
+
+  const INPUT_CLS =
+    "w-full border-b border-black bg-transparent py-2 text-sm font-bold  tracking-widest text-black placeholder:text-gray-300 focus:outline-none focus:border-black transition-colors duration-[250ms]";
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+    setError("");
+  };
+const API_URL = import.meta.env.VITE_API_URL;
+
+console.log("API_URL:", API_URL); // add this line temporarily
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  setError("");
+console.log("Sending form:", form); // add this
+  try {
+    const res = await axios.post(`${API_URL}/login`, form);
+    localStorage.setItem("adminToken", res.data.token);
+    window.location.href = "/Admin";
+    login(res.data.admin);
+    
+  } catch (error) {
+    console.log("Full error:", error);
+  console.log("Response:", error.response);
+  setError(error.response?.data?.message || "Authentication failed");
+  console.log("Error data:", error.response?.data);
+  console.log("Error status:", error.response?.status);
+  setError(error.response?.data?.message || "Authentication failed");
+  } finally {
+    setLoading(false);
+  }
+};
+
+  return (
+    <div className="min-h-screen flex flex-col border-black">
+      {/* Header */}
+      <header className="border-b border-black px-8 py-4 flex justify-between items-center">
+        <span className="text-[0.65rem] uppercase tracking-widest font-bold text-black">
+          Baha Architecture
+        </span>
+        <span className="text-[0.65rem] uppercase tracking-widest font-bold text-gray-400">
+          Admin Portal
+        </span>
+      </header>
+
+      {/* Main */}
+      <main className="flex-1 flex items-center justify-center px-8">
+        <div className="w-full max-w-sm">
+          {/* Title */}
+          <div className="mb-12 border-b border-black pb-6">
+            <p className="text-[0.65rem] uppercase tracking-widest font-bold text-gray-400 mb-2">
+              Restricted Access
+            </p>
+            <h1 className="text-2xl font-bold uppercase tracking-widest text-black">
+              Sign In
+            </h1>
+          </div>
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+            {/* Email */}
+            <div className="flex flex-col gap-2">
+              <label className={LABEL_CLS}>Email</label>
+              <input
+                type="email"
+                name="email"
+                value={form.email}
+                onChange={handleChange}
+                placeholder="admin@baha.com"
+                required
+                className={INPUT_CLS}
+              />
+            </div>
+
+            {/* Password */}
+            <div className="flex flex-col gap-2">
+              <label className={LABEL_CLS}>Password</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={form.password}
+                  onChange={handleChange}
+                  placeholder="••••••••"
+                  required
+                  className={INPUT_CLS + " pr-16"}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-0 bottom-2 text-[0.65rem] uppercase tracking-widest font-bold text-gray-400 hover:text-black transition-colors duration-[250ms]"
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </button>
+              </div>
+            </div>
+
+            {/* Error */}
+            {error && (
+              <p className="text-[0.65rem] uppercase tracking-widest font-bold text-red-500">
+                — {error}
+              </p>
+            )}
+
+            {/* Submit */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="mt-4 border border-black py-3 text-[0.65rem] uppercase tracking-widest font-bold text-black hover:bg-black hover:text-white transition-colors duration-[250ms] disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              {loading ? "Authenticating..." : "Enter"}
+            </button>
+          </form>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="border-t border-black px-8 py-2">
+        <div className="flex flex-wrap justify-between items-center gap-4">
+          <li className="text-[0.65rem] uppercase tracking-widest font-bold text-gray-600 list-none">
+            Developed by KHAIR EDDINE LADHARI
+          </li>
+          <ul className="flex flex-wrap gap-6 items-center">
+            <li className="text-[0.65rem] uppercase tracking-widest font-bold text-gray-600">
+              © Baha Architecture
+            </li>
+          </ul>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default AdminLogin;

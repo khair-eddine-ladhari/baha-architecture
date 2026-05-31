@@ -1,5 +1,5 @@
 import './App.css'
-import { Route, Routes } from 'react-router'
+import { Route, Router, Routes } from 'react-router'
 import Home from './components/Home'
 import Noaccess from './components/Noaccess'
 import ProjectModal from './components/Projectmodal.jsx'
@@ -9,6 +9,7 @@ import Contact from './components/Contact.jsx'
 import EntryScreen from './components/EntryScreen.jsx'
 import { useState, useRef } from 'react'
 import AdminDashboard from './components/adminfolder/adminDashboard.jsx'
+import Login  from './components/Login.jsx'
 
 function App() {
   const [entered, setEntered] = useState(
@@ -37,10 +38,10 @@ function App() {
             <Route path='/Work' element={<Work />} />
             <Route path='/Contact' element={<Contact />} />
             <Route path='/Noaccess' element={<Noaccess />} />
+            <Route path='/Admin' element={<AdminDashboard />} />
+            <Route path='/Login' element={<Login />} />
             <Route path='*' element={<h1 className='text-center text-3xl font-bold mt-10'>404 Not Found</h1>} />
 
-
-            <Route path='/Admin' element={<AdminDashboard />} />
 
 
 
