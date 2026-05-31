@@ -7,24 +7,23 @@ const API_URL = import.meta.env.VITE_API_URL;
 export default function GlobalState({ children }) {
   const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    const token = localStorage.getItem("adminToken");
-    if (!token) return;
+useEffect(() => {
+  const token = sessionStorage.getItem("adminToken")
+  if (!token) return;
 
-    axios.get(`${API_URL}/user`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then(res => {
-        const { password, __v, ...safeUser } = res.data;
-        setUser(safeUser);
-      })
-      .catch((err) => {
-        if (err.response?.status === 401) {
-          localStorage.removeItem("adminToken")
-          setUser(null);
-        }
-      });
-  }, []);
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    
+    if (payload.exp * 1000 < Date.now()) {
+      sessionStorage.removeItem("adminToken");
+      return;
+    }
+
+    setUser({ id: payload.id, role: payload.role });
+  } catch (err) {
+    sessionStorage.removeItem("adminToken");
+  }
+}, []);
 
   const login = (userData) => {
     const { password, __v, ...safeUser } = userData;
@@ -33,7 +32,7 @@ export default function GlobalState({ children }) {
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("adminToken");
+    sessionStorage.removeItem("adminToken");
   };
 
   return (

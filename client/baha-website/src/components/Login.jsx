@@ -1,6 +1,7 @@
 
 
-import { GlobalContext } from "../GlobalState"
+import { GlobalContext } from "./GlobalContext";
+import { useContext } from "react";
 
 import { useState } from "react";
 import axios from "axios";
@@ -23,7 +24,7 @@ const AdminLogin = () => {
   };
 const API_URL = import.meta.env.VITE_API_URL;
 
-console.log("API_URL:", API_URL); // add this line temporarily
+// add this line temporarily
 const handleSubmit = async (e) => {
   e.preventDefault();
   setLoading(true);
@@ -31,7 +32,8 @@ const handleSubmit = async (e) => {
 console.log("Sending form:", form); // add this
   try {
     const res = await axios.post(`${API_URL}/login`, form);
-    localStorage.setItem("adminToken", res.data.token);
+   
+    sessionStorage.setItem("adminToken", res.data.token)
     window.location.href = "/Admin";
     login(res.data.admin);
     

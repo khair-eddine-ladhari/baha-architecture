@@ -83,7 +83,7 @@ function ProjectTeaser({ project, index, titleRef }) {
 }
 
 /* ─── Home page ───────────────────────────────────────────────────── */
-export default function Home() {
+export default function Home({user}) {
   const [heroVisible, setHeroVisible] = useState(false);
   const [projects, setProjects] = useState([]);
   const [news, setNews]         = useState([]);
@@ -128,7 +128,7 @@ export default function Home() {
 
       {/* ── Desktop navbar (hidden on mobile/tablet) ── */}
       <div className="hidden lg:block">
-        <Navbar />
+        <Navbar user={user} />
       </div>
 
       {/* ── Mobile/tablet hamburger + overlay ── */}

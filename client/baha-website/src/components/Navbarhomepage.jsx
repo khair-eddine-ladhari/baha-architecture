@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
-
+import { Link } from "react-router-dom";
 const HEADER_H = 57.6;
 
-const Navbar = ({ name }) => {
+const Navbar = ({ name,user }) => {
   const [visible, setVisible] = useState(true);
   const lastScrollY = useRef(0);
 
@@ -46,7 +46,7 @@ const Navbar = ({ name }) => {
       }}
     >
       <nav style={{ display: "flex", alignItems: "center", gap: "2rem" }}>
-        {["Admin", "Home", "Work", "About", "Contact"].map((n) => (
+        {[ "Home", "Work", "About", "Contact"].map((n) => (
           <a
             key={n}
             href={`/${n.toLowerCase()}`}
@@ -57,7 +57,14 @@ const Navbar = ({ name }) => {
           >
             {n}
           </a>
+
+          
+
+
+
         ))}
+
+
       </nav>
     </header>
   );

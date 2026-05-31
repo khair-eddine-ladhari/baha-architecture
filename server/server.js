@@ -4,12 +4,14 @@ import cors from "cors";
 import dotenv from "dotenv";
 import passport from "passport";
 import"./security/passport.js";
+import { Login } from "./Controllers/auth/Login.js";
 
 // routers
 import authRouter from "./Routes/authRouter.js";
 import projectsRouter from "./Routes/projectsRouter.js";
 import newsRouter from "./Routes/newsRouter.js";
 import sendmessageRouter from "./Routes/sendmessageRouter.js";
+import { loginValidator } from "./validators/loginValidator.js";
 // config
 dotenv.config();
 
@@ -39,6 +41,9 @@ const connectDB = async () => {
   }
 };
 
+
+app.post("/login",loginValidator, Login);
+
 // ========================
 // ROUTES
 // ========================
@@ -63,6 +68,7 @@ app.use((req, res) => {
 
 //========================
 
+// server/createAdmin.js
 
 // ========================
 // START
