@@ -14,6 +14,7 @@ import { deleteProjectImage } from "../Controllers/projects/deleteProjectImage.j
 
 import { createProjectValidator, updateProjectValidator } from "../Validators/projectValidator.js";
 import { admindashboard } from "../Controllers/projects/admindashboard.js";
+import { getnbprojects } from "../Controllers/projects/getProjects.js";
 const router = express.Router();
 
 const adminAuth = [
@@ -38,6 +39,7 @@ router.get("/projectswork", getProjectswork);
 
 // ========================
 // ADMIN
+router.get("/nbprojects", getnbprojects);
 // ========================
 
 

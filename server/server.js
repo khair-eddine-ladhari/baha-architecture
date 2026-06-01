@@ -10,8 +10,11 @@ import { Login } from "./Controllers/auth/Login.js";
 import authRouter from "./Routes/authRouter.js";
 import projectsRouter from "./Routes/projectsRouter.js";
 import newsRouter from "./Routes/newsRouter.js";
-import sendmessageRouter from "./Routes/sendmessageRouter.js";
+import messageRouter from "./Routes/sendmessageRouter.js";
 import { loginValidator } from "./validators/loginValidator.js";
+import { countVisitor } from "./Rolemiddleware/visitorCounter.js";
+import getVisitorCount from "./Controllers/getVisitorCount.js";
+
 // config
 dotenv.config();
 
@@ -52,9 +55,16 @@ app.use("/api", projectsRouter);
 app.use("/api", newsRouter);
 
 
-
 //about sendmessage
-app.use("/api/messages", sendmessageRouter);
+app.use("/api", messageRouter);
+//get the messages by the admin
+
+// expose visitor stats before the 404 handler
+app.get("/api/visitors", getVisitorCount);
+app.post("/api/visitors/track", countVisitor, (req, res) => {
+  res.status(204).end();
+});
+
 
 
 // ========================
@@ -66,11 +76,6 @@ app.use((req, res) => {
 
 
 
-//========================
-
-// server/createAdmin.js
-
-// ========================
 // START
 // ========================
 connectDB();

@@ -103,9 +103,11 @@ console.log("Sending form:", form); // add this
                   required
                   className={INPUT_CLS + " pr-16"}
                 />
+                
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
+
                   className="absolute right-0 bottom-2 text-[0.65rem] uppercase tracking-widest font-bold text-gray-400 hover:text-black transition-colors duration-[250ms]"
                 >
                   {showPassword ? "Hide" : "Show"}
@@ -121,10 +123,11 @@ console.log("Sending form:", form); // add this
             )}
 
             {/* Submit */}
+            
             <button
               type="submit"
               disabled={loading}
-              className="mt-4 border border-black py-3 text-[0.65rem] uppercase tracking-widest font-bold text-black hover:bg-black hover:text-white transition-colors duration-[250ms] disabled:opacity-30 disabled:cursor-not-allowed"
+              className="mt-4 border border-black py-3 text-[0.65rem] cursor-pointer uppercase tracking-widest font-bold text-black hover:bg-black hover:text-white transition-colors duration-[250ms] disabled:opacity-30 disabled:cursor-not-allowed"
             >
               {loading ? "Authenticating..." : "Enter"}
             </button>

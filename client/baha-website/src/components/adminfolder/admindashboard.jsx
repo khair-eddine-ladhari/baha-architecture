@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import VerticalMenuAdmin from "./verticalmenuadmin.jsx";
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
@@ -7,17 +8,10 @@ import {
 const API_URL = import.meta.env.VITE_API_URL;
 const LABEL = "text-[0.65rem] uppercase tracking-widest font-bold";
 
-const generateMockData = () => {
-  const data = [];
-  const now = new Date();
-  for (let i = 29; i >= 0; i--) {
-    const date = new Date(now);
-    date.setDate(now.getDate() - i);
-    const label = date.toLocaleDateString("en-GB", { day: "2-digit", month: "short" });
-    data.push({ date: label, visits: Math.floor(Math.random() * 120) + 20 });
-  }
-  return data;
-};
+
+
+
+
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
@@ -34,32 +28,44 @@ const MENU_ITEMS = [
   { id: "news",     label: "Manage News" },
   { id: "messages", label: "Manage Messages" },
   { id: "settings", label: "Settings" },
+  { id: "logout", label: "Logout" },
 ];
 
 export default function AdminDashboard({ setPage }) {
-  const [stats, setStats]       = useState({ projects: null, news: null, messages: null });
-  const [visitorData]           = useState(generateMockData);
+  const [stats, setStats]       = useState({ projects: null, news: null, messages: null, visitors: null  });
+  const [visitorData, setVisitorData] = useState([]);
   const [range, setRange]       = useState(30);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [, setMenuOpen]         = useState(false);
 
-  const token   = sessionStorage.getItem("adminToken");
-  const headers = { Authorization: `Bearer ${token}` };
+   useEffect(() => {
+    const token   = sessionStorage.getItem("adminToken");
+    const headers = { Authorization: `Bearer ${token}` };
 
-  useEffect(() => {
     Promise.all([
-      axios.get(`${API_URL}/api/projects`, { headers }).catch(() => null),
-      axios.get(`${API_URL}/api/news`,     { headers }).catch(() => null),
-      axios.get(`${API_URL}/api/messages`, { headers }).catch(() => null),
-    ]).then(([p, n, m]) => {
+      axios.get(`${API_URL}/api/nbprojects`).catch(() => null),
+      axios.get(`${API_URL}/api/news`).catch(() => null),
+      axios.get(`${API_URL}/api/admin/messages`, { headers }).catch(() => null),
+      axios.get(`${API_URL}/api/visitors`).catch(() => null),
+    ]).then(([p, n, m, v]) => {
       setStats({
         projects: p ? (Array.isArray(p.data) ? p.data.length : p.data?.projects?.length ?? 0) : "—",
         news:     n ? (Array.isArray(n.data) ? n.data.length : n.data?.news?.length     ?? 0) : "—",
         messages: m ? (Array.isArray(m.data) ? m.data.length : m.data?.messages?.length ?? 0) : "—",
+        visitors: v ? v.data?.totalVisits ?? 0 : "—"
       });
+      setVisitorData(v?.data?.dailyVisits || []);
     });
   }, []);
 
-  const totalVisits = visitorData.slice(-range).reduce((sum, d) => sum + d.visits, 0);
+
+
+
+
+
+  
+
+ 
+ 
   const chartData   = visitorData.slice(-range);
 
   const handleNav = (id) => {
@@ -79,7 +85,7 @@ export default function AdminDashboard({ setPage }) {
       {/* ── STAT CARDS — full width on mobile ── */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-black border-b border-black">
         {[
-          { label: "Visits",   value: totalVisits.toLocaleString(), note: "this month" },
+          { label: "Visits",   value: stats.visitors,               note: "total" },
           { label: "Messages", value: stats.messages,               note: "inbox" },
           { label: "Projects", value: stats.projects,               note: "portfolio" },
           { label: "News",     value: stats.news,                   note: "articles" },
@@ -95,21 +101,8 @@ export default function AdminDashboard({ setPage }) {
       {/* ── MAIN AREA ── */}
       <div className="flex flex-1">
 
-        {/* ── LEFT MENU — hidden on mobile, visible on desktop ── */}
-        <aside className="hidden sm:flex flex-col border-r border-black w-48 shrink-0">
-          <p className={`${LABEL} text-gray-300 px-6 pt-6 pb-3`}>Quick access</p>
-          {MENU_ITEMS.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => handleNav(item.id)}
-              className={`text-left px-6 py-4 border-t border-black ${LABEL} text-gray-500
-                hover:bg-black hover:text-white transition-colors duration-[250ms]`}
-            >
-              {item.label}
-            </button>
-          ))}
-        </aside>
-
+        <VerticalMenuAdmin />
+        
         {/* ── RIGHT: chart ── */}
         <div className="flex-1 px-6 sm:px-8 py-6 flex flex-col gap-4">
 
@@ -173,7 +166,7 @@ export default function AdminDashboard({ setPage }) {
             </ResponsiveContainer>
           </div>
 
-          <p className={`${LABEL} text-gray-300`}>* mock data — connect analytics api to go live</p>
+          <p className={`${LABEL} text-gray-300`}>* live visitor data</p>
         </div>
       </div>
 
