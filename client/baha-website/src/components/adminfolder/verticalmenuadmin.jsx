@@ -36,7 +36,7 @@ const handleNav = (id) => {
        <aside className="hidden sm:flex flex-col border-r border-black w-48 shrink-0 h-screen">
 
         <Link to="/Admin" className={`${LABEL} text-black  px-6 py-4 border-b border-black`}>
-         <p className={`${LABEL} text-gray-600 px-6 pt-6 pb-3 hover:text-gray-500`}>Quick access</p>
+         <p className={`${LABEL} text-gray-600 px-6 pt-6 pb-3 hover:text-gray-500`}>Dashboard</p>
         </Link>
           
 
