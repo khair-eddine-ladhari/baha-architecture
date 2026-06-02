@@ -8,14 +8,19 @@ const messageSchema = new mongoose.Schema(
       required: true,
      
     },
+   
     firstName: {
       type: String,
       required: true,
     },
-    lastName: {
+    message: {
       type: String,
       required: true,
     },
+     read: {
+    type: Boolean,
+    default: false,  // new messages start as unread
+  }
   },
   { timestamps: true }
 );

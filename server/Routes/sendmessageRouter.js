@@ -7,6 +7,7 @@ import getmessagesbyadmin from "../Controllers/auth/getmessagesbyadmin.js";
 import deletemessagesbyadmin from "../Controllers/auth/deletemessagesbyadmin.js";
 import passport from "passport";
 import RolesMiddleware from "../security/RoleMiddleware.js";
+import markasreadmessagesbyadmin from "../Controllers/auth/markasreadmessagesbyadmin.js";
 const router = express.Router();
 
 
@@ -22,4 +23,5 @@ router.get("/admin/messages", ...adminAuth, getmessagesbyadmin);
 
 router.delete("/admin/messages/:id", ...adminAuth, deletemessagesbyadmin);
 
+router.patch("/admin/messages/:id/read", ...adminAuth, markasreadmessagesbyadmin); // new route to mark as read
 export default router;

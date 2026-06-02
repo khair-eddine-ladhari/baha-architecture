@@ -18,7 +18,7 @@ const adminAuth = [
 
 // public
 router.get("/news", getNews);
-router.get("/news/:id", getNewsById);
+
 
 // admin only
 
@@ -36,7 +36,14 @@ router.post("/admin/news",
   createNews
 );
 
-router.put("/admin/news/:id",
+
+router.post("/admin/news",
+  ...adminAuth,
+  createNewsValidator,     // ← validate here
+  createNews
+);
+
+router.patch("/admin/news/:id",
   ...adminAuth,
   updateNewsValidator,     // ← validate here
   updateNews

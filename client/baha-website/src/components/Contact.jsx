@@ -28,23 +28,48 @@ function ArrowRight({ size = 14 }) {
 export default function ContactPage() {
   const isMobile = useIsMobile(768);
   const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [newErrors, setErrors] = useState("");
+  const handleChange = (e) => {setForm({ ...form, [e.target.name]: e.target.value }),setSuccess(false)};
+  const [success, setSuccess] = useState(false);
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+const funsubscribe = async () => {
+   let errors = {};
 
-  const funsubscribe = async () => {
-    try {
-      await axios.post(`${API_URL}/api/messages`, {
-        firstName: form.name,
-        email: form.email,
-        lastName: form.message,
-      });
-      setForm({ name: "", email: "", message: "" });
-      alert("Message sent successfully!");
-    } catch (error) {
-      console.error("Error sending:", error);
-    }
-  };
+  if (!form.name || form.name.length < 2) {
+     errors.name = "Name must be at least 2 characters.";
+  }
 
+  if (!form.email) {
+    errors.email = "Email is required.";
+  } else if (!form.email.includes("@")) {
+    errors.email = "Email must be valid.";
+  }
+
+  if (!form.message || form.message.length < 10) {
+    errors.message = "Message must be at least 10 characters.";
+  }
+
+  setErrors(errors);
+
+ 
+
+  // stop if errors exist
+
+
+  try {
+    await axios.post(`${API_URL}/api/messages`, {
+      firstName: form.name,
+      email: form.email,
+      message: form.message,
+    });
+
+    setForm({ name: "", email: "", message: "" });
+    setErrors({});
+    setSuccess(true);
+  } catch (error) {
+    console.error("Error sending:", error);
+  }
+};
   return (
     <div className="min-h-screen bg-[#efefef] font-[Helvetica,Arial,sans-serif] text-[#222]">
 
@@ -114,11 +139,31 @@ export default function ContactPage() {
                     className="bg-transparent border-0 border-b border-[#999] outline-none text-[13px] py-2 resize-none focus:border-[#222] transition-colors"
                   />
                 </div>
+                {/* Errors */}
+<div className="flex flex-col gap-1">
+  {Object.values(newErrors).map((err, index) => (
+    <span key={index} className="text-[0.65rem] uppercase tracking-widest font-bold text-red-500">
+      {err}
+    </span>
+  ))}
+</div>
+
+{/* Success message */}
+{success && (
+  <div className="border-t border-b border-black py-4">
+    <p className="text-[0.65rem] uppercase tracking-widest font-bold text-gray-600">
+      Message sent — we'll be in touch soon.
+    </p>
+  </div>
+)}
+
+{/* Send button */}
+
 
                 <div>
                   <button
                     onClick={funsubscribe}
-                    className="flex items-center gap-2 text-[11px] tracking-[0.2em] uppercase border-b border-[#222] pb-0.5 hover:opacity-50 transition-opacity"
+                    className="flex items-center gap-2 text-[11px] tracking-[0.2em] cursor-pointer  uppercase border-b border-[#222] pb-0.5 hover:opacity-50 transition-opacity"
                   >
                     SEND
                     <ArrowRight size={13} />

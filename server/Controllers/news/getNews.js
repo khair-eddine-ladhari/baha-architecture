@@ -3,7 +3,7 @@ import News from "../../Models/News.js";
 export const getNews = async (req, res) => {
   try {
     const news = await News.find()
-      .select("title date body")
+      .select("title date content")
       .sort({ date: -1 });
 
     res.status(200).json(news);

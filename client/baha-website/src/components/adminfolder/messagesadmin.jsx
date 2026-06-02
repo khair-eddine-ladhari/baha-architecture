@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import VerticalMenuAdmin from "./verticalmenuadmin.jsx";
-
+import VerticalMenuAdminmenu from "./verticalmenuadminmobile.jsx";
 const API_URL = import.meta.env.VITE_API_URL;
 const LABEL = "text-[0.65rem] uppercase tracking-widest font-bold";
 
@@ -24,8 +24,9 @@ function ConfirmModal({ message, onConfirm, onCancel }) {
         <p className={`${LABEL} text-gray-400`}>Confirm Action</p>
         <p className="text-sm text-gray-700 leading-relaxed">{message}</p>
         <div className="flex border border-black">
-          <button onClick={onCancel} className={`flex-1 py-2 ${LABEL} text-gray-500 hover:bg-gray-50 transition-colors border-r border-black`}>Cancel</button>
-          <button onClick={onConfirm} className={`flex-1 py-2 ${LABEL} bg-black text-white hover:bg-gray-900 transition-colors`}>Confirm</button>
+          <button onClick={onCancel} className={`flex-1 py-2 ${LABEL} text-gray-500 hover:bg-gray-50 cursor-pointer transition-colors border-r border-black`}>Cancel</button>
+          <button onClick={onConfirm} className={`flex-1 py-2 ${LABEL} bg-black text-white hover:bg-gray-900 cursor-pointer
+           transition-colors`}>Confirm</button>
         </div>
       </div>
     </div>
@@ -40,15 +41,15 @@ export default function ManageMessages({ setPage }) {
   const [confirm, setConfirm]   = useState(null); // { type, id } | null
 
   // ── Fetch ──
-  useEffect(() => {
+ useEffect(() => {
     const token   = sessionStorage.getItem("adminToken");
     const headers = { Authorization: `Bearer ${token}` };
     axios.get(`${API_URL}/api/admin/messages`, { headers })
       .then((res) => {
         const data = Array.isArray(res.data) ? res.data : res.data?.messages ?? [];
-        setMessages(data.length ? data : MOCK_MESSAGES);
+        setMessages(data);
       })
-      .catch(() => setMessages(MOCK_MESSAGES))
+      .catch(() => setMessages([]))
       .finally(() => setLoading(false));
   }, []);
 
@@ -78,7 +79,7 @@ export default function ManageMessages({ setPage }) {
 
   const openMessage = (msg) => {
     setSelected(msg);
-    if (!msg.read) markRead(msg._id);
+    
   };
 
   const markAllRead = () => {
@@ -120,7 +121,7 @@ export default function ManageMessages({ setPage }) {
           <button
             key={f.key}
             onClick={() => setFilter(f.key)}
-            className={`px-6 py-3 ${LABEL} border-r border-black transition-colors duration-200
+            className={`px-6 py-3 ${LABEL} border-r border-black cursor-pointer transition-colors duration-200
               ${filter === f.key ? "bg-black text-white" : "text-gray-400 hover:text-black"}`}
           >
             {f.label}
@@ -153,7 +154,7 @@ export default function ManageMessages({ setPage }) {
                 <button
                   key={msg._id}
                   onClick={() => openMessage(msg)}
-                  className={`w-full text-left px-5 py-4 border-b border-black transition-colors duration-150
+                  className={`w-full text-left px-5 py-4 border-b border-black cursor-pointer transition-colors duration-150
                     ${selected?._id === msg._id ? "bg-black text-white" : "bg-white hover:bg-gray-50"}
                     ${i === 0 ? "" : ""}`}
                 >
@@ -208,7 +209,7 @@ export default function ManageMessages({ setPage }) {
                     {/* Back button (mobile) */}
                     <button
                       onClick={() => setSelected(null)}
-                      className={`sm:hidden ${LABEL} text-gray-400 hover:text-black mb-2 flex items-center gap-1 transition-colors`}
+                      className={`sm:hidden ${LABEL} text-gray-400 hover:text-black cursor-pointer mb-2 flex items-center gap-1 transition-colors`}
                     >
                       <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2"><path d="M8 2L4 6l4 4"/></svg>
                       Back
@@ -237,21 +238,16 @@ export default function ManageMessages({ setPage }) {
                     {!selected.read && (
                       <button
                         onClick={() => markRead(selected._id)}
-                        className={`px-3 py-2 ${LABEL} text-gray-500 hover:bg-black hover:text-white transition-colors border-r border-black`}
+                        className={`px-3 py-2 ${LABEL} text-gray-500 hover:bg-black hover:text-white cursor-pointer transition-colors border-r border-black`}
                         title="Mark as read"
                       >
                         ✓ Read
                       </button>
                     )}
-                    <a
-                      href={`mailto:${selected.email}?subject=Re: ${encodeURIComponent(selected.subject)}`}
-                      className={`px-3 py-2 ${LABEL} text-gray-500 hover:bg-black hover:text-white transition-colors border-r border-black`}
-                    >
-                      Reply
-                    </a>
+                 
                     <button
                       onClick={() => setConfirm({ type: "delete", id: selected._id })}
-                      className={`px-3 py-2 ${LABEL} text-gray-500 hover:bg-black hover:text-white transition-colors`}
+                      className={`px-3 py-2 ${LABEL} text-gray-500 hover:bg-black hover:text-white cursor-pointer transition-colors`}
                     >
                       Delete
                     </button>
@@ -260,8 +256,8 @@ export default function ManageMessages({ setPage }) {
 
                 {/* Subject */}
                 <div className="px-6 sm:px-8 py-4 border-b border-black">
-                  <p className={`${LABEL} text-gray-400 mb-1`}>Subject</p>
-                  <p className="text-base font-bold tracking-tight">{selected.subject}</p>
+                  <p className={`${LABEL} text-gray-400 mb-1`}>Name</p>
+                  <p className="text-base font-bold tracking-tight">{selected.firstName}</p>
                 </div>
 
                 {/* Body */}
@@ -270,16 +266,7 @@ export default function ManageMessages({ setPage }) {
                   <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{selected.message}</p>
                 </div>
 
-                {/* Quick reply CTA */}
-                <div className="border-t border-black px-6 sm:px-8 py-4">
-                  <a
-                    href={`mailto:${selected.email}?subject=Re: ${encodeURIComponent(selected.subject)}`}
-                    className={`inline-flex items-center gap-2 ${LABEL} bg-black text-white px-5 py-2.5 hover:bg-gray-900 transition-colors`}
-                  >
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 1l10 5-10 5V7l7-2-7-2V1z"/></svg>
-                    Reply via email
-                  </a>
-                </div>
+              
 
               </div>
             )}
@@ -289,39 +276,21 @@ export default function ManageMessages({ setPage }) {
       </div>
 
       {/* ── MOBILE BOTTOM MENU ── */}
-      <div className="sm:hidden border-t border-black">
-        <div className="grid grid-cols-2 gap-px bg-black">
-          {[
-            { id: "projects", label: "Manage Projects" },
-            { id: "news",     label: "Manage News" },
-            { id: "messages", label: "Manage Messages" },
-            { id: "settings", label: "Settings" },
-            { id: "logout",   label: "Logout" },
-          ].map((item) => (
-            <button
-              key={item.id}
-              onClick={() => setPage(item.id)}
-              className={`bg-white text-left px-4 py-4 ${LABEL} text-gray-500
-                hover:bg-black hover:text-white transition-colors duration-[250ms]
-                ${item.id === "messages" ? "bg-black !text-white" : ""}`}
-            >
-              {item.label}
-            </button>
-          ))}
-        </div>
-      </div>
+
+      <VerticalMenuAdminmenu />
+   
 
       {/* ── CONFIRM MODAL ── */}
       {confirm?.type === "delete" && (
         <ConfirmModal
-          message="Permanently delete this message? This action cannot be undone."
+          message="Are you sure you want to delete this message? "
           onConfirm={() => deleteMsg(confirm.id)}
           onCancel={() => setConfirm(null)}
         />
       )}
       {confirm?.type === "markAll" && (
         <ConfirmModal
-          message={`Mark all ${unreadCount} unread messages as read?`}
+          message={`Are you sure you want to mark all ${unreadCount} unread messages as read?`}
           onConfirm={markAllRead}
           onCancel={() => setConfirm(null)}
         />

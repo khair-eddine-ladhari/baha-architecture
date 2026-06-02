@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import VerticalMenuAdmin from "./verticalmenuadmin.jsx";
+import VerticalMenuAdminmobile from "./verticalmenuadminmobile.jsx";
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
@@ -171,20 +172,7 @@ export default function AdminDashboard({ setPage }) {
       </div>
 
       {/* ── MOBILE MENU — bottom bar ── */}
-      <div className="sm:hidden border-t border-black">
-        <div className="grid grid-cols-2 gap-px bg-black">
-          {MENU_ITEMS.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => handleNav(item.id)}
-              className={`bg-white text-left px-4 py-4 ${LABEL} text-gray-500
-                hover:bg-black hover:text-white transition-colors duration-[250ms]`}
-            >
-              {item.label}
-            </button>
-          ))}
-        </div>
-      </div>
+      <VerticalMenuAdminmobile />
 
     </div>
   );

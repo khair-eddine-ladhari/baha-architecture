@@ -5,11 +5,11 @@ import Message from "../../Models/Message.js";
 
 const sendMessage = async (req, res) => {
     try {
-        const { firstName, email, lastName } = req.body;
+        const { firstName, email, message } = req.body;
 
         
 
-        const newMessage = new Message({ firstName, email, lastName });
+        const newMessage = new Message({ firstName, email, message });
         await newMessage.save();
 
         res.status(200).json({ message: "Message sent successfully" });
