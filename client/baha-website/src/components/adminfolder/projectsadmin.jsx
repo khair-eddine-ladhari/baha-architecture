@@ -1,15 +1,11 @@
 import { useState, useMemo } from "react";
-
+import { useEffect } from "react";
+import axios from "axios";
+const API_URL = import.meta.env.VITE_API_URL;
 const CATS = ["Residential", "Commercial", "Cultural", "Urban"];
 const CAT_ABBR = { Residential: "RES", Commercial: "COM", Cultural: "CUL", Urban: "URB" };
 import VerticalMenuAdmin from "./verticalmenuadmin.jsx";
 import VerticalMenuAdminmobile from "./verticalmenuadminmobile.jsx";
-const INITIAL_PROJECTS = [
-  { id: 1, title: "Carthage Residential Complex", slug: "carthage-residential-complex", location: "Carthage, Tunisia", description: "A high-end residential complex with panoramic sea views and sustainable design.", year: 2021, category: "Residential", cover_image: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=400", images: ["https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=400", "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400", "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400"], published: true, buildings: "index" },
-  { id: 2, title: "Tunis Business Tower", slug: "tunis-business-tower", location: "Tunis, Tunisia", description: "A 22-floor commercial tower in the heart of the city.", year: 2022, category: "Commercial", cover_image: "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=400", images: ["https://images.unsplash.com/photo-1486325212027-8081e485255e?w=400"], published: true, buildings: "tower" },
-  { id: 3, title: "Medina Cultural Center", slug: "medina-cultural-center", location: "Medina, Tunisia", description: "A contemporary cultural center embedded in historical urban fabric.", year: 2023, category: "Cultural", cover_image: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=400", images: ["https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=400"], published: false, buildings: "complex" },
-  { id: 4, title: "Sfax Urban District", slug: "sfax-urban-district", location: "Sfax, Tunisia", description: "Mixed-use urban regeneration project across 4 city blocks.", year: 2020, category: "Urban", cover_image: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=400", images: ["https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=400"], published: true, buildings: "district" },
-];
 
 function slugify(str) {
   return str.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
@@ -19,7 +15,7 @@ const EMPTY_FORM = () => ({
   title: "", location: "", description: "",
   year: new Date().getFullYear(),
   category: "Residential",
-  cover_image: "", images: [], published: false, buildings: "",
+  cover_image: "", images: [], buildings: "",
 });
 
 // ─── Reusable UI ────────────────────────────────────────────────────────────
@@ -54,7 +50,7 @@ function Modal({ title, onClose, footer, children }) {
       <div className="bg-white border border-black w-full max-w-[560px]">
         <div className="flex items-center justify-between border-b border-black px-5 py-4">
           <Label>{title}</Label>
-          <button onClick={onClose} className="text-zinc-400 hover:text-black transition-colors p-1">
+          <button onClick={onClose} className="text-zinc-400 hover:text-black cursor-pointer transition-colors p-1">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M1 1l12 12M13 1L1 13" />
             </svg>
@@ -118,9 +114,7 @@ function ProjectForm({ form, onChange }) {
             {CATS.map((c) => <option key={c} value={c}>{c}</option>)}
           </select>
         </Field>
-        <Field label="Buildings">
-          <input className={inputCls} value={form.buildings} onChange={(e) => onChange("buildings", e.target.value)} placeholder="index / tower / complex" />
-        </Field>
+       
       </div>
 
       <Field label="Description">
@@ -136,7 +130,7 @@ function ProjectForm({ form, onChange }) {
           {(form.images || []).map((img, i) => (
             <div key={i} className="flex items-center gap-2 px-2 py-1 border border-zinc-200 text-[0.7rem]">
               <span className="flex-1 text-zinc-600 truncate font-mono" title={img}>{img}</span>
-              <button onClick={() => removeImg(i)} className="text-zinc-400 hover:text-red-600 transition-colors text-xs leading-none">✕</button>
+              <button onClick={() => removeImg(i)} className="text-zinc-400 cursor-pointer hover:text-red-600 transition-colors text-xs leading-none">✕</button>
             </div>
           ))}
         </div>
@@ -148,25 +142,17 @@ function ProjectForm({ form, onChange }) {
             onChange={(e) => setImgInput(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addImg(); } }}
           />
-          <button onClick={addImg} className="bg-black text-white px-3 font-mono text-[0.6rem] font-bold uppercase tracking-[0.1em] hover:bg-zinc-800 transition-colors">
+          <button onClick={addImg} className="bg-black text-white cursor-pointer px-3 font-mono text-[0.6rem] font-bold uppercase tracking-[0.1em] hover:bg-zinc-800 transition-colors">
             Add
           </button>
         </div>
       </Field>
 
-      <div className="flex items-center gap-2.5">
-        <input
-          type="checkbox"
-          id="f-pub"
-          checked={form.published}
-          onChange={(e) => onChange("published", e.target.checked)}
-          className="border border-black w-4 h-4 cursor-pointer accent-black"
-        />
-        <label htmlFor="f-pub" className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-zinc-400 cursor-pointer">
-          Published
-        </label>
-      </div>
+     
     </div>
+
+
+
   );
 }
 
@@ -196,7 +182,7 @@ function ProjectRow({ project, onEdit, onDelete, onTogglePublish }) {
   const [imgErr, setImgErr] = useState(false);
 
   return (
-    <div className="grid grid-cols-[56px_1fr_90px_60px_90px_100px] gap-px bg-black border-b border-black group">
+    <div className="grid grid-cols-[56px_1fr_90px_60px_90px] gap-px bg-zinc-400 border-b border-black group">
       {/* Thumb */}
       <div className="bg-white p-1 flex items-center">
         {project.cover_image && !imgErr ? (
@@ -227,28 +213,15 @@ function ProjectRow({ project, onEdit, onDelete, onTogglePublish }) {
         <span className="text-[0.6rem] font-bold uppercase tracking-[0.08em] text-zinc-600">{project.category}</span>
       </div>
 
-      {/* Images count */}
-      <div className="bg-white group-hover:bg-zinc-50 px-3 py-2.5 flex items-center transition-colors">
-        <Label className="text-zinc-400">{project.images.length} img{project.images.length !== 1 ? "s" : ""}</Label>
-      </div>
+    
 
-      {/* Status */}
-      <div className="bg-white group-hover:bg-zinc-50 px-3 py-2.5 flex items-center transition-colors">
-        <button
-          onClick={() => onTogglePublish(project)}
-          className={`px-1.5 py-0.5 text-[0.58rem] font-bold uppercase tracking-[0.1em] border border-black cursor-pointer transition-colors ${
-            project.published ? "bg-black text-white hover:bg-zinc-800" : "bg-white text-black hover:bg-zinc-100"
-          }`}
-        >
-          {project.published ? "Published" : "Draft"}
-        </button>
-      </div>
+     
 
       {/* Actions */}
       <div className="bg-white group-hover:bg-zinc-50 flex items-center transition-colors">
         <button
           onClick={() => onEdit(project)}
-          className="flex-1 h-full flex items-center justify-center text-zinc-400 hover:text-black transition-colors border-r border-black"
+          className="flex-1 h-full flex items-center cursor-pointer justify-center text-zinc-400 hover:text-black transition-colors border-r border-black cursor-pointer"
           title="Edit"
         >
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -258,7 +231,7 @@ function ProjectRow({ project, onEdit, onDelete, onTogglePublish }) {
         </button>
         <button
           onClick={() => onDelete(project)}
-          className="flex-1 h-full flex items-center justify-center text-zinc-400 hover:text-red-600 transition-colors"
+          className="flex-1 h-full flex items-center cursor-pointer justify-center text-zinc-400 hover:text-red-600 transition-colors"
           title="Delete"
         >
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -274,12 +247,33 @@ function ProjectRow({ project, onEdit, onDelete, onTogglePublish }) {
 // ─── Main Component ──────────────────────────────────────────────────────────
 
 export default function ProjectsDashboard() {
-  const [projects, setProjects] = useState(INITIAL_PROJECTS);
+
+
+
+  const [projects, setProjects] = useState([]);
   const [nextId, setNextId] = useState(5);
   const [filter, setFilter] = useState("All");
   const [search, setSearch] = useState("");
   const [modal, setModal] = useState(null); // null | {type, project?}
   const [form, setForm] = useState(EMPTY_FORM());
+  const [loading, setLoading] = useState(true);
+
+
+  useEffect(() => {
+    axios.get(`${API_URL}/api/nbprojects`).then((res) => {
+      setProjects(Array.isArray(res.data) ? res.data : res.data.projects ?? []);
+   
+    }).catch((err) => {
+      console.error("Failed to fetch projects:", err);
+    }).finally(() => {setLoading(false);});
+  }, []);
+
+
+
+
+
+
+
 
   const catCounts = useMemo(() => {
     const c = {};
@@ -289,28 +283,41 @@ export default function ProjectsDashboard() {
 
   const totalPub = projects.filter((p) => p.published).length;
 
-  const filtered = useMemo(() => {
-    return projects.filter((p) => {
-      const matchCat = filter === "All" || p.category === filter;
-      const q = search.trim().toLowerCase();
-      const matchQ = !q || p.title.toLowerCase().includes(q) || p.location.toLowerCase().includes(q);
-      return matchCat && matchQ;
-    });
-  }, [projects, filter, search]);
+const filtered = useMemo(() => {
+  return projects.filter((p) => {
+    const matchCat = filter === "All" || p.category === filter;
+    const q = search.trim().toLowerCase();
+    const matchQ = !q 
+      || (p.title ?? "").toLowerCase().includes(q) 
+      || (p.location ?? "").toLowerCase().includes(q);
+    return matchCat && matchQ;
+  });
+}, [projects, filter, search]);
 
   function openAdd() {
     setForm(EMPTY_FORM());
     setModal({ type: "add" });
   }
 
-  function openEdit(p) {
-    setForm({ ...p, images: [...p.images] });
-    setModal({ type: "edit", project: p });
-  }
-
+  // ✅ EMPTY_FORM already has buildings: "" — good.
+// Fix openEdit to guard undefined fields:
+function openEdit(p) {
+  setForm({
+    ...EMPTY_FORM(),   // start with safe defaults
+    ...p,             // override with project data
+    images: [...(p.images || [])],
+    buildings: p.buildings ?? "",
+    cover_image: p.cover_image ?? "",
+    location: p.location ?? "",
+    description: p.description ?? "",
+  });
+  setModal({ type: "edit", project: p });
+}
   function openDelete(p) {
     setModal({ type: "delete", project: p });
   }
+
+  
 
   function closeModal() { setModal(null); }
 
@@ -318,33 +325,53 @@ export default function ProjectsDashboard() {
     setForm((f) => ({ ...f, [key]: val }));
   }
 
-  function saveProject() {
-    if (!form.title.trim()) return;
-    const slug = slugify(form.title);
-    const data = {
-      ...form,
-      slug,
-      cover_image: form.cover_image.trim() || form.images[0] || "",
-      year: parseInt(form.year) || new Date().getFullYear(),
-      buildings: form.buildings.trim() || "index",
-    };
+async function saveProject() {
+    const token = sessionStorage.getItem("adminToken"); // ✅ Add this
+  const headers = { Authorization: `Bearer ${token}` }; // ✅ Add this
+ const data = {
+  ...form,
+  
+  cover_image: (form.cover_image || "").trim() || form.images?.[0] || "",
+  year: parseInt(form.year) || new Date().getFullYear(),
+  buildings: (form.buildings || "").trim() || "index",
+};
+
+  try {
     if (modal.type === "add") {
-      setProjects((ps) => [{ ...data, id: nextId }, ...ps]);
-      setNextId((n) => n + 1);
+      const res = await axios.post(`${API_URL}/api/admin/projects`, data, { headers });
+      setProjects((ps) => [res.data, ...ps]);
     } else {
-      setProjects((ps) => ps.map((p) => p.id === form.id ? { ...data, id: p.id } : p));
+      const res = await axios.put(`${API_URL}/api/admin/projects/${form._id}`, data, { headers });
+      setProjects((ps) => ps.map((p) => p._id === form._id ? res.data : p));
     }
+  } catch (err) {
+    console.error("Save failed:", err.response?.status, err.response?.data);
+  } finally {
     closeModal();
   }
-
-  function deleteProject() {
-    setProjects((ps) => ps.filter((p) => p.id !== modal.project.id));
+}
+async function deleteProject() {
+    console.log("modal.project:", modal.project);
+    console.log("_id:", modal.project._id);
+  const token = sessionStorage.getItem("adminToken");
+  console.log("adminToken:", token);
+  
+  try {
+    const res = await axios.delete(
+      `${API_URL}/api/admin/projects/${modal.project._id}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    console.log("Delete response:", res);
+    setProjects((ps) => ps.filter((p) => String(p._id) !== String(modal.project._id)));
+  } catch (err) {
+    console.error("Delete failed:", err.response?.status, err.response?.data);
+  } finally {
     closeModal();
   }
-
-  function togglePublish(p) {
-    setProjects((ps) => ps.map((x) => x.id === p.id ? { ...x, published: !x.published } : x));
-  }
+}
+    function togglePublish(p) {
+        setProjects((ps) => ps.map((x) => x.id === p.id ? { ...x, published: !x.published } : x));
+    }
 
   const STATS = [
     { label: "Total", value: projects.length, note: "projects" },
@@ -390,7 +417,7 @@ export default function ProjectsDashboard() {
             </div>
             <button
               onClick={openAdd}
-              className="flex items-center gap-1.5 bg-black text-white px-4 py-2 font-mono text-[0.6rem] font-bold uppercase tracking-[0.1em] hover:bg-zinc-800 transition-colors"
+              className="flex items-center gap-1.5 bg-black text-white cursor-pointer px-4 py-2 font-mono text-[0.6rem] font-bold uppercase tracking-[0.1em] hover:bg-zinc-800 transition-colors"
             >
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M12 5v14M5 12h14" />
@@ -418,7 +445,7 @@ export default function ProjectsDashboard() {
           <button
             key={c}
             onClick={() => setFilter(c)}
-            className={`flex-1 py-2.5 border-r border-black last:border-r-0 font-mono text-[0.6rem] font-bold uppercase tracking-[0.1em] transition-colors ${
+            className={`flex-1 py-2.5 border-r border-black last:border-r-0 font-mono cursor-pointer text-[0.6rem] font-bold uppercase tracking-[0.1em] transition-colors ${
               filter === c ? "bg-black text-white" : "bg-white text-zinc-400 hover:bg-zinc-100 hover:text-black"
             }`}
           >
@@ -428,35 +455,45 @@ export default function ProjectsDashboard() {
       </div>
 
       {/* Table header */}
-      <div className="grid grid-cols-[56px_1fr_90px_60px_90px_100px] gap-px bg-black border-b border-black">
-        {["", "Title / Location", "Category", "Images", "Status", "Actions"].map((h, i) => (
-          <div key={i} className="bg-zinc-100 px-3 py-2">
+      <div className="grid grid-cols-[56px_1fr_90px_60px_90px] gap-px bg-black border-b border-black">
+        {["", "Title / Location", "Category", "Actions"].map(( h) => (
+         
             <Label className="text-zinc-400">{h}</Label>
-          </div>
+        
         ))}
       </div>
 
       {/* Rows */}
-      {filtered.length > 0 ? (
-        filtered.map((p) => (
-          <ProjectRow
-            key={p.id}
-            project={p}
-            onEdit={openEdit}
-            onDelete={openDelete}
-            onTogglePublish={togglePublish}
-          />
-        ))
-      ) : (
-        <div className="py-12 text-center">
-          <Label className="text-zinc-400">No projects found</Label>
-        </div>
-      )}
-
+{loading ? (
+  <div className="py-12 text-center">
+    <Label className="text-zinc-400">Loading…</Label>
+  </div>
+) : filtered.length > 0 ? (
+  filtered.map((p) => (
+    <ProjectRow
+      key={p._id}
+      project={{
+        ...p,
+        title: p.title ?? "",
+        location: p.location ?? "",
+        category: p.category ?? "",
+        year: p.year ?? "",
+        images: p.images ?? [],
+        cover_image: p.cover_image ?? "",
+      }}
+      onEdit={openEdit}
+      onDelete={openDelete}
+    />
+  ))
+) : (
+  <div className="py-12 text-center">
+    <Label className="text-zinc-400">No projects found</Label>
+  </div>
+)}
       {/* Footer */}
       <div className="flex items-center justify-between px-5 py-3 border-t border-black">
         <Label className="text-zinc-400">{filtered.length} of {projects.length} shown</Label>
-        <Label className="text-zinc-400">{totalPub} published · {projects.length - totalPub} draft</Label>
+    
       </div>
 
       {/* Modals */}
@@ -470,8 +507,10 @@ export default function ProjectsDashboard() {
           onClose={closeModal}
           footer={
             <>
-              <ModalBtn onClick={closeModal}>Cancel</ModalBtn>
-              <ModalBtn variant="primary" onClick={saveProject}>
+              <ModalBtn onClick={closeModal} className="cursor-pointer">
+                Cancel
+              </ModalBtn>
+              <ModalBtn variant="primary" onClick={saveProject} className="cursor-pointer">
                 {modal.type === "edit" ? "Save Changes" : "Add Project"}
               </ModalBtn>
             </>

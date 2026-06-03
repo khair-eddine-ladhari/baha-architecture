@@ -25,8 +25,8 @@ const projectSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      enum: ["Public", "Private"],
-      required: true,
+      enum: ["Industrial", "residential", "cultural", "landscape", "interior", "urban"],
+      
     },
     cover_image: {
       type: String,    // cloudinary URL
@@ -37,7 +37,7 @@ const projectSchema = new mongoose.Schema(
     ],
     published: {
       type: Boolean,
-      default: true,
+      
     },
   },
   { timestamps: true }

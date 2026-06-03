@@ -19,10 +19,6 @@ export const createProjectValidator = [
     .isNumeric().withMessage("Year must be a number")
     .isInt({ min: 1900, max: 2100 }).withMessage("Year is not valid"),
 
-  body("category")
-    .notEmpty().withMessage("Category is required")
-    .isIn(["Public", "Private"]).withMessage("Category must be Public or Private"),
-
   // check errors
   (req, res, next) => {
     const errors = validationResult(req);
@@ -52,13 +48,6 @@ export const updateProjectValidator = [
     .isNumeric().withMessage("Year must be a number")
     .isInt({ min: 1900, max: 2100 }).withMessage("Year is not valid"),
 
-  body("category")
-    .optional()
-    .isIn(["Public", "Private"]).withMessage("Category must be Public or Private"),
-
-  body("published")
-    .optional()
-    .isBoolean().withMessage("Published must be true or false"),
 
   // check errors
   (req, res, next) => {
