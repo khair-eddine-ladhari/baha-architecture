@@ -110,18 +110,18 @@ function WorkGrid({ items, keyPrefix, delayStep }) {
 export default function KAANWork() {
   const isMobile = useIsMobile(768);
 
-  const [BUILDINGS, setBuildings] = useState([]);
-  const [PROJECTS, setProjects]   = useState([]);
-  const [INDEX_ITEMS, setIndexItems] = useState([]);
+  const [RESIDENTIAL, setResidential] = useState([]);
+  const [COMMERCIAL, setCommercial]   = useState([]);
+  const [MEDICAL_ITEMS, setMedicalItems] = useState([]);
 
   useEffect(() => {
-    axios.get(`${API_URL}/api/buildings`).then((r) => setBuildings(r.data)).catch(console.error);
-    axios.get(`${API_URL}/api/projectswork`).then((r) => setProjects(r.data)).catch(console.error);
-    axios.get(`${API_URL}/api/index`).then((r) => setIndexItems(r.data)).catch(console.error);
+    axios.get(`${API_URL}/api/residential`).then((r) => setResidential(r.data)).catch(console.error);
+    axios.get(`${API_URL}/api/commercial`).then((r) => setCommercial(r.data)).catch(console.error);
+    axios.get(`${API_URL}/api/medical`).then((r) => setMedicalItems(r.data)).catch(console.error);
   }, []);
 
-  const projectsRef = useRef(null);
-  const indexRef    = useRef(null);
+  const commercialRef = useRef(null);
+  const medicalRef    = useRef(null);
 
   const [scrollY, setScrollY] = useState(0);
   useEffect(() => {
@@ -136,14 +136,14 @@ export default function KAANWork() {
     window.scrollTo({ top: y, behavior: "smooth" });
   }, []);
 
-  const [activeSection, setActiveSection] = useState("buildings");
+  const [activeSection, setActiveSection] = useState("residential");
   useEffect(() => {
-    if (!projectsRef.current || !indexRef.current) return;
-    const pTop = projectsRef.current.getBoundingClientRect().top + window.scrollY - HEADER_H - SECTION_H;
-    const iTop = indexRef.current.getBoundingClientRect().top   + window.scrollY - HEADER_H - SECTION_H * 2;
-    if (scrollY >= iTop - 20)      setActiveSection("index");
-    else if (scrollY >= pTop - 20) setActiveSection("projects");
-    else                           setActiveSection("buildings");
+    if (!commercialRef.current || !medicalRef.current) return;
+    const pTop = commercialRef.current.getBoundingClientRect().top + window.scrollY - HEADER_H - SECTION_H;
+    const iTop = medicalRef.current.getBoundingClientRect().top   + window.scrollY - HEADER_H - SECTION_H * 2;
+    if (scrollY >= iTop - 20)      setActiveSection("medical");
+    else if (scrollY >= pTop - 20) setActiveSection("commercial");
+    else                           setActiveSection("residential");
   }, [scrollY]);
 
   const stickyBar = (top, zIndex) => ({
@@ -165,11 +165,11 @@ export default function KAANWork() {
     : stickyTitle;
 
   const bottomBars = [
-    { label: "Projects", key: "projects", topOffset: HEADER_H + SECTION_H },
-    { label: "Index",    key: "index",    topOffset: HEADER_H + SECTION_H * 2 },
+    { label: "Commercial", key: "commercial", topOffset: HEADER_H + SECTION_H },
+    { label: "Medical",    key: "medical",    topOffset: HEADER_H + SECTION_H * 2 },
   ].filter(item => {
-    if (activeSection === "buildings") return true;
-    if (activeSection === "projects") return item.key === "index";
+    if (activeSection === "residential") return true;
+    if (activeSection === "commercial") return item.key === "medical";
     return false;
   });
 
@@ -276,23 +276,23 @@ export default function KAANWork() {
 
       <div id="kaan-root" style={{ paddingTop: HEADER_H }}>
 
-        {/* Buildings bar */}
+        {/* Residential bar */}
         <div style={stickyBar(HEADER_H, 30)}>
-          <h2 style={stickyTitleMobile}>Buildings</h2>
+          <h2 style={stickyTitleMobile}>Residential</h2>
         </div>
-        <WorkGrid items={BUILDINGS} keyPrefix="building" delayStep={0.055} />
+        <WorkGrid items={RESIDENTIAL} keyPrefix="residential" delayStep={0.055} />
 
-        {/* Projects bar */}
-        <div ref={projectsRef} style={stickyBar(HEADER_H + SECTION_H, 20)}>
-          <h2 style={stickyTitleMobile}>Projects</h2>
+        {/* Commercial bar */}
+        <div ref={commercialRef} style={stickyBar(HEADER_H + SECTION_H, 20)}>
+          <h2 style={stickyTitleMobile}>Commercial</h2>
         </div>
-        <WorkGrid items={PROJECTS} keyPrefix="project" delayStep={0.05} />
+        <WorkGrid items={COMMERCIAL} keyPrefix="commercial" delayStep={0.05} />
 
-        {/* Index bar */}
-        <div ref={indexRef} style={stickyBar(HEADER_H + SECTION_H * 2, 10)}>
-          <h2 style={stickyTitleMobile}>Index</h2>
+        {/* Medical bar */}
+        <div ref={medicalRef} style={stickyBar(HEADER_H + SECTION_H * 2, 10)}>
+          <h2 style={stickyTitleMobile}>Medical</h2>
         </div>
-        <WorkGrid items={INDEX_ITEMS} keyPrefix="index" delayStep={0.035} />
+        <WorkGrid items={MEDICAL_ITEMS} keyPrefix="medical" delayStep={0.035} />
 
         
         <div className="relative z-10">
@@ -310,7 +310,7 @@ export default function KAANWork() {
           {bottomBars.map(({ label, key, topOffset }) => (
             <button
               key={key}
-              onClick={() => scrollTo(key === "projects" ? projectsRef : indexRef, topOffset)}
+              onClick={() => scrollTo(key === "commercial" ? commercialRef : medicalRef, topOffset)}
               style={{
                 background: "#fff", border: "none", borderBottom: "1px solid #000",
                 cursor: "pointer", height: SECTION_H, width: "100%",

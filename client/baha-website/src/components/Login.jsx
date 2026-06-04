@@ -75,16 +75,17 @@ console.log("Sending form:", form); // add this
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+          <form onSubmit={handleSubmit} autoComplete="off" className="flex flex-col  gap-8 ">
             {/* Email */}
             <div className="flex flex-col gap-2">
               <label className={LABEL_CLS}>Email</label>
               <input
+              autoComplete="off"
                 type="email"
                 name="email"
                 value={form.email}
                 onChange={handleChange}
-                placeholder="admin@baha.com"
+                placeholder="youremail@gmail.com"
                 required
                 className={INPUT_CLS}
               />
@@ -95,6 +96,7 @@ console.log("Sending form:", form); // add this
               <label className={LABEL_CLS}>Password</label>
               <div className="relative">
                 <input
+                autoComplete="new-password"
                   type={showPassword ? "text" : "password"}
                   name="password"
                   value={form.password}

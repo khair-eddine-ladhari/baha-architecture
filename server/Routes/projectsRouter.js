@@ -30,12 +30,12 @@ router.get("/projects/:slug", getProjectBySlug);
 
 // building in th work page )
 
-import { getBuildings, getindex, getProjectswork } from "../Controllers/projects/getProjects.js";
+import { getresidential, getmedical, getcommercial } from "../Controllers/projects/getProjects.js";
 
 
-router.get("/buildings", getBuildings);
-router.get("/index", getindex);
-router.get("/projectswork", getProjectswork);
+router.get("/residential", getresidential);
+router.get("/medical", getmedical);
+router.get("/commercial", getcommercial);
 
 // ========================
 // ADMIN

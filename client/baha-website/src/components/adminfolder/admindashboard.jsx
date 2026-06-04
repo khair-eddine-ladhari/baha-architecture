@@ -83,8 +83,8 @@ export default function AdminDashboard({ setPage }) {
         <h1 className="text-2xl font-bold uppercase tracking-widest">Overview</h1>
       </div>
 
-      {/* ── STAT CARDS — full width on mobile ── */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-black border-b border-black">
+      {/* ── STAT CARDS ── */}
+      <div className="grid grid-cols-4 gap-px bg-black border-b border-black">
         {[
           { label: "Visits",   value: stats.visitors,               note: "total" },
           { label: "Messages", value: stats.messages,               note: "inbox" },
@@ -99,13 +99,26 @@ export default function AdminDashboard({ setPage }) {
         ))}
       </div>
 
+      {/* ── FILTER TABS ── */}
+      <div className="border-b border-black flex">
+        {["Overview", "Details"].map((f) => (
+          <button
+            key={f}
+            className={`px-6 py-3 ${LABEL} cursor-pointer transition-colors duration-200
+              ${f === "Overview" ? "bg-black text-white" : "text-gray-400 hover:text-black"}`}
+          >
+            {f}
+          </button>
+        ))}
+      </div>
+
       {/* ── MAIN AREA ── */}
-      <div className="flex flex-1">
+      <div className="flex flex-1 min-h-0 overflow-hidden">
 
         <VerticalMenuAdmin />
         
         {/* ── RIGHT: chart ── */}
-        <div className="flex-1 px-6 sm:px-8 py-6 flex flex-col gap-4">
+        <div className="flex-1 px-6 sm:px-8 py-6 flex flex-col gap-4 overflow-auto">
 
           {/* chart header */}
           <div className="flex items-center justify-between">

@@ -111,6 +111,22 @@ export default function ManageMessages({ setPage }) {
         </div>
       </div>
 
+      {/* ── STAT CARDS ── */}
+      <div className="grid grid-cols-4 gap-px  text-white border-b border-black">
+        {[
+          { label: "Total", value: messages.length, note: "all messages" },
+          { label: "Unread", value: unreadCount, note: "inbox" },
+          { label: "Read", value: messages.length - unreadCount, note: "archived" },
+          { label: "Senders", value: "—", note: "contacts" },
+        ].map((s) => (
+          <div key={s.label} className="bg-white px-6 py-5 flex flex-col gap-1">
+            <span className={`${LABEL}  text-white`}>{s.label}</span>
+            <span className="text-3xl font-bold tracking-tight">{s.value}</span>
+            <span className={`${LABEL}  text-white`}>{s.note}</span>
+          </div>
+        ))}
+      </div>
+
       {/* ── FILTER TABS ── */}
       <div className="border-b border-black flex">
         {[
@@ -121,7 +137,7 @@ export default function ManageMessages({ setPage }) {
           <button
             key={f.key}
             onClick={() => setFilter(f.key)}
-            className={`px-6 py-3 ${LABEL} border-r border-black cursor-pointer transition-colors duration-200
+            className={`px-6 py-3 ${LABEL} cursor-pointer transition-colors duration-200
               ${filter === f.key ? "bg-black text-white" : "text-gray-400 hover:text-black"}`}
           >
             {f.label}
@@ -130,7 +146,7 @@ export default function ManageMessages({ setPage }) {
       </div>
 
       {/* ── MAIN AREA ── */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 min-h-0 overflow-hidden">
 
         <VerticalMenuAdmin />
 

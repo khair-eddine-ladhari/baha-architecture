@@ -2,7 +2,7 @@ import Project from "../../Models/Projects.js";
 
 export const getProjects = async (req, res) => {
   try {
-    const projects = await Project.find({ buildings: "homeprojects" })
+    const projects = await Project.find({ category: "Homepage" })
       .select("title slug location year category cover_image description images")
       .sort({ createdAt: -1 });
 
@@ -39,9 +39,9 @@ export const getnbprojects = async (req, res) => {
 };
 
 
-export const getBuildings = async (req, res) => {
+export const getresidential = async (req, res) => {
   try {
-    const projects = await Project.find({ buildings: "building" })
+    const projects = await Project.find({ category: "Residential" })
       .select("title slug location year category cover_image description images")
       .sort({ createdAt: -1 });
 
@@ -60,9 +60,9 @@ export const getBuildings = async (req, res) => {
 
 
 
-export const getindex = async (req, res) => {
+export const getmedical = async (req, res) => {
   try {
-    const projects = await Project.find({ buildings: "index" })
+    const projects = await Project.find({ category: "Medical" })
       .select("title slug location year category cover_image description images")
       .sort({ createdAt: -1 });
 
@@ -81,9 +81,9 @@ export const getindex = async (req, res) => {
 
 
 
-export const getProjectswork = async (req, res) => {
+export const getcommercial = async (req, res) => {
   try {
-    const projects = await Project.find({ buildings: "projectswork" })
+    const projects = await Project.find({ category: "Commercial" })
       .select("title slug location year category cover_image description images")
       .sort({ createdAt: -1 });
 

@@ -377,7 +377,7 @@ const ProjectModal = () => {
         @keyframes scaleIn  { from{opacity:0;transform:scale(0.975)} to{opacity:1;transform:scale(1)} }
         @keyframes scrollPulse { 0%,100%{transform:scaleY(0.35);transform-origin:top} 50%{transform:scaleY(1);transform-origin:top} }
         * { -webkit-font-smoothing: antialiased; }
-        ::-webkit-scrollbar { width: 0; }
+      
         [aria-label="Toggle menu"] { display: none !important; }
       `}</style>
     </div>
