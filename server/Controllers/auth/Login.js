@@ -22,7 +22,7 @@ export const Login = async (req, res) => {
     const token = jwt.sign(
       { id: admin._id, role: admin.role },
       process.env.JWT_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "2h" }
     );
 
     // 4. send token
@@ -37,6 +37,11 @@ export const Login = async (req, res) => {
     });
 
   } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+  console.error(error);
+  res.status(500).json({ 
+    message: process.env.NODE_ENV === "production" 
+      ? "Internal server error" 
+      : error.message 
+  });
+}
 };

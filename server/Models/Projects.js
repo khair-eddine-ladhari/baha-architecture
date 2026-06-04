@@ -25,20 +25,24 @@ const projectSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      enum: ["Industrial", "residential", "cultural", "landscape", "interior", "urban"],
-      
+      enum: ["Residential", "Commercial", "Homepage", "Medical"],
+      required: true,
     },
     cover_image: {
       type: String,    // cloudinary URL
       required: true,
     },
     images: [
-      { type: String }
+      { type: String,
+      required:true,
+       }
     ],
     published: {
       type: Boolean,
       
+      
     },
+
   },
   { timestamps: true }
 );

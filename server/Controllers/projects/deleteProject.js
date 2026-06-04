@@ -20,7 +20,11 @@ export const deleteProject = async (req, res) => {
     res.status(200).json({ message: "Project deleted successfully" });
 
   } catch (error) {
-    console.error("Delete error:", error);
-    res.status(500).json({ message: error.message });
-  }
+  console.error(error);
+  res.status(500).json({ 
+    message: process.env.NODE_ENV === "production" 
+      ? "Internal server error" 
+      : error.message 
+  });
+}
 };

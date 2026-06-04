@@ -3,7 +3,8 @@ import { body, validationResult } from "express-validator";
 export const loginValidator = [
   body("email")
     .notEmpty().withMessage("Email is required")
-    .isEmail().withMessage("Email is not valid"),
+    .isEmail().withMessage("Email is not valid")
+    .customSanitizer(val => val.replace(/[${}]/g, "")), // ✅ removes NoSQL injection chars
 
   body("password")
     .notEmpty().withMessage("Password is required")

@@ -6,83 +6,65 @@ import fs from "fs";
 export const updateProject = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, location, description, year, category, published } = req.body;
+    const { title, location, description, year, category, buildings } = req.body;
 
-    // 1. find project by id
     const project = await Project.findById(id);
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
     }
 
-    // 2. update slug if title changed
-    if (title) {
-      project.title = title;
-      project.slug = slugify(title, {
-        lower: true,
-        strict: true,
-      });
-    }
-
-    // 3. update text fields
-    if (location)    project.location    = location;
-    if (description) project.description = description;
-    if (year)        project.year        = year;
-    if (category)    project.category    = category;
-    if (published !== undefined) project.published = published;
-
-    // 4. update cover image if new one sent
-    if (req.files && req.files.cover_image) {
-
-      // ✅ delete old cover from cloudinary using public_id
-      await cloudinary.uploader.destroy(project.cover_image.public_id);
-
-      // upload new cover
-      const coverResult = await cloudinary.uploader.upload(
-        req.files.cover_image[0].path, {
+    // cover image — use new file if uploaded, else keep existing
+    let cover_image = project.cover_image;
+    if (req.files?.cover_image?.[0]) {
+      const coverResult = await cloudinary.uploader.upload(req.files.cover_image[0].path, {
         folder: "projects/covers",
       });
-
-      // delete temp file
       fs.unlinkSync(req.files.cover_image[0].path);
-
-      // ✅ save both url and public_id
-      project.cover_image = {
-        url: coverResult.secure_url,
-        public_id: coverResult.public_id
-      };
+      cover_image = coverResult.secure_url; // ✅ plain string
     }
 
-    // 5. add new images if sent
-    if (req.files && req.files.images) {
-      const newImages = await Promise.all(
-        req.files.images.map(async (file) => {
-          const result = await cloudinary.uploader.upload(file.path, {
-            folder: "projects/images",
-          });
+    // images — use new files if uploaded, else keep existing
+   // ✅ replace with this
+const existing_images = req.body.existing_images
+  ? JSON.parse(req.body.existing_images)
+  : project.images;
 
-          // delete temp file
-          fs.unlinkSync(file.path);
+let newImages = [];
+if (req.files?.images?.length) {
+  newImages = await Promise.all(
+    req.files.images.map(async (file) => {
+      const result = await cloudinary.uploader.upload(file.path, {
+        folder: "projects/images",
+      });
+      fs.unlinkSync(file.path);
+      return result.secure_url;
+    })
+  );
+}
 
-          return {
-            url: result.secure_url,
-            public_id: result.public_id,
-          };
-        })
-      );
+const images = [...existing_images, ...newImages];
 
-      // add new images to existing images
-      project.images.push(...newImages);
-    }
+    // update fields
+    project.title = title || project.title;
+    project.slug = title ? slugify(title, { lower: true, strict: true }) : project.slug;
+    project.location = location || project.location;
+    project.description = description || project.description;
+    project.year = year || project.year;
+    project.category = category || project.category;
+    project.buildings = buildings || project.buildings;
+    project.cover_image = cover_image;
+    project.images = images;
 
-    // 6. save updated project
     await project.save();
 
-    res.status(200).json({
-      message: "Project updated successfully",
-      project,
-    });
+    res.status(200).json({ message: "Project updated successfully", project });
 
   } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+  console.error(error);
+  res.status(500).json({ 
+    message: process.env.NODE_ENV === "production" 
+      ? "Internal server error" 
+      : error.message 
+  });
+}
 };
