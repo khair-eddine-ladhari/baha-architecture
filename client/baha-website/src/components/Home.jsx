@@ -18,7 +18,7 @@ function NewsItem({ item }) {
         className="w-full text-left py-4 grid grid-cols-[5rem_1fr] gap-3 group"
       >
         <span className="text-[0.6rem] uppercase tracking-widest font-bold text-gray-400 pt-0.5 tabular-nums">
-          {item.date}
+          {new Date(item.date).toLocaleDateString("en-US", { year: "numeric", month: "long" })}
         </span>
         <span className="text-[0.6rem] uppercase tracking-widest font-bold leading-snug group-hover:opacity-50 transition-opacity duration-300">
           {item.title}
