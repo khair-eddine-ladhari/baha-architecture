@@ -1,7 +1,7 @@
 // just login route
 import express from "express";
 import { Login } from "../Controllers/auth/Login.js";
-import { loginValidator } from "../Validators/loginValidator.js";
+import { loginValidator } from "../validators/loginValidator.js";
 
 const router = express.Router();
 
