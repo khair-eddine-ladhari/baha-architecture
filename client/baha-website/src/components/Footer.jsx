@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const Footer = () => {
 
   const LINK_CLS =
@@ -10,13 +12,15 @@ const Footer = () => {
               developed by KHAIR EDDINE LADHARI
             </li>
           <ul className="flex flex-wrap gap-6 items-center">
-            {["Contact", "Privacy Policy"].map((item) => (
+            {["Contact"].map((item) => (
               <li key={item}>
-                <a href="#" className={LINK_CLS}>
+                <Link to={item.toLowerCase()} className={LINK_CLS}>
                   {item}
-                </a>
+                </Link>
               </li>
             ))}
+              
+            
             <li className="text-[0.65rem] uppercase tracking-widest font-bold text-gray-600">
               © Baha Architecture
             </li>
