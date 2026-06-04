@@ -1,7 +1,7 @@
 // just login route
 import express from "express";
 
-import { validateMessage } from "../Validators/messagevalidator.js";
+import { validateMessage } from "../validators/messagevalidator.js";
 import sendMessage from "../Controllers/auth/sendMessage.js";
 import getmessagesbyadmin from "../Controllers/auth/getmessagesbyadmin.js";
 import deletemessagesbyadmin from "../Controllers/auth/deletemessagesbyadmin.js";
