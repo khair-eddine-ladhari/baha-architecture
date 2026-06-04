@@ -46,6 +46,7 @@ const app = express();
 // ✅ limit JSON body size
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));
+app.set('trust proxy', 1);
 app.use(helmet());
 
 app.use(cors({
