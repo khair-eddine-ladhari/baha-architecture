@@ -12,7 +12,7 @@ import { deleteProject } from "../Controllers/projects/deleteProject.js";
 import { uploadProjectImages } from "../Controllers/projects/uploadProjectImages.js";
 import { deleteProjectImage } from "../Controllers/projects/deleteProjectImage.js";
 
-import { createProjectValidator, updateProjectValidator } from "../Validators/projectValidator.js";
+import { createProjectValidator, updateProjectValidator } from "../validators/projectValidator.js";
 import { admindashboard } from "../Controllers/projects/admindashboard.js";
 import { getnbprojects } from "../Controllers/projects/getProjects.js";
 const router = express.Router();
