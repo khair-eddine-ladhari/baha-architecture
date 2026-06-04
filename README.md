@@ -4,6 +4,20 @@ A professional architecture portfolio and content management system built for Ba
 
 ---
 
+## 📸 Screenshots
+
+### Public Site
+![Home Page](screenshots/home.png)
+![Projects Portfolio](screenshots/projects.png)
+![Project Detail](screenshots/project-detail.png)
+
+### Admin Dashboard
+![Admin Overview](screenshots/admin-overview.png)
+![Admin Projects](screenshots/admin-projects.png)
+![Visitor Analytics](screenshots/analytics.png)
+
+---
+
 ## 🌐 Live Demo
 
 - **Frontend**: https://baha-architecture.vercel.app
@@ -27,7 +41,7 @@ A professional architecture portfolio and content management system built for Ba
 - Image upload directly to Cloudinary
 - Manage news articles
 - View and manage client messages
-- Visitor analytics with chart
+- Visitor analytics with charts
 
 ---
 
